@@ -16,6 +16,9 @@ module NavigationHelpers
     
     when /the homepage/
       root_path
+      
+    when /the new user sessions page/
+      new_user_session_path
     
     # Add more page name => path mappings here
     
