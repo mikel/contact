@@ -9,6 +9,15 @@ class ApplicationController < ActionController::Base
   filter_parameter_logging :password, :password_confirmation
 
   private
+  
+    def admin_only
+      unless current_user.member_of?(:admin)
+        flash[:notice] = "You must be an administrator to access this page"
+        redirect_to root_path
+        return false
+      end
+    end
+  
     def current_user_session
       return @current_user_session if defined?(@current_user_session)
       @current_user_session = UserSession.find

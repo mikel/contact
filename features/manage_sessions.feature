@@ -31,4 +31,9 @@ Feature: Manage sessions
     And I press "Login"
     Then I should see "Login successful!"
     Then I should be on the homepage
+
+  Scenario: Staying logged in
+    Given I am logged in
+    When I go to the homepage
+    Then I should be on the homepage
   
