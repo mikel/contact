@@ -20,12 +20,15 @@ module NavigationHelpers
     when /the new user sessions page/
       new_user_session_path
     
+    when /the users page/
+      users_path
+
+    when /the new user page/
+      new_user_path
+
     when /the edit user page for "(\w+)"/
       user = User.find_by_login($1)
       edit_user_path(user.id)
-    
-    when /the users page/
-      users_path
     
     # Add more page name => path mappings here
     

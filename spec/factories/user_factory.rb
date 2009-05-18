@@ -1,5 +1,7 @@
 Factory.define :user do |u|
-  u.login "Bob"
+  u.login "bsmith"
+  u.given_name "Bob"
+  u.family_name "Smith"
   u.password "PassWord"
   u.password_confirmation { |a| a.password }
   u.email { |a| "#{a.login}@someplace.com" }

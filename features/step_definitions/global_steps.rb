@@ -14,3 +14,7 @@ Given /^I am logged in as an admin$/ do
   click_button("Login")
 end
 
+Given /^"([^\"]*)" is a.? "([^\"]*)"$/ do |user, role|
+  User.find_by_login(user).add_role!(role)
+end
+

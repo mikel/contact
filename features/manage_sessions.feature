@@ -10,23 +10,23 @@ Feature: Manage sessions
 
   Scenario: Non existent user
     Given I am on the new user sessions page
-    When I fill in "login" with "Bob"
+    When I fill in "login" with "bsmith"
     And I fill in "password" with "PassWord"
     And I press "Login"
     Then I should see "Login does not exist"
 
   Scenario: Incorrect password
-    Given there is a user with username "Bob" and password "PassWord"
+    Given there is a user with username "bsmith" and password "PassWord"
     And I am on the new user sessions page
-    When I fill in "login" with "Bob"
+    When I fill in "login" with "bsmith"
     And I fill in "password" with "guess"
     And I press "Login"
     Then I should see "Password is not valid"
 
   Scenario: Successful login
-    Given there is a user with username "Bob" and password "PassWord"
+    Given there is a user with username "bsmith" and password "PassWord"
     And I am on the new user sessions page
-    When I fill in "login" with "Bob"
+    When I fill in "login" with "bsmith"
     And I fill in "password" with "PassWord"
     And I press "Login"
     Then I should see "Login successful!"

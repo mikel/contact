@@ -1,3 +1,16 @@
-<%- @users.each do |user| -%>
-<%= user.login %>
+<%- if flash -%>
+  <p><%= flash[:notice] -%>
+     <%= flash[:error] -%></p>
 <%- end -%>
+<%- @users.each do |user| -%>
+<%= user.given_name %>
+<%= user.family_name %>
+<%= user.email %>
+<%= user.login %>
+  <%= link_to "Edit", edit_user_path(user) %>
+  <%= link_to "Delete", user_path(user), :method => :delete, :confirm => "Are you sure?", :id => "delete_#{user.id}" %>
+<%- end -%>
+
+<p>
+  <%= link_to "New User", new_user_path %>
+</p>

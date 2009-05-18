@@ -1,0 +1,21 @@
+<%= form.label :login %><br />
+<%= form.text_field :login %><br />
+<br />
+<%= form.label :email %><br />
+<%= form.text_field :email %><br />
+<br />
+<%= form.label :password, form.object.new_record? ? nil : "Change password" %><br />
+<%= form.password_field :password %><br />
+<br />
+<%= form.label :password_confirmation %><br />
+<%= form.password_field :password_confirmation %><br />
+<br />
+<%= form.label :given_name %><br />
+<%= form.text_field :given_name %><br />
+<br />
+<%= form.label :family_name %><br />
+<%= form.text_field :family_name %><br />
+<br />
+<%= form.label :admin %><br />
+<%= form.check_box :admin %><br />
+<br />
