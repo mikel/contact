@@ -13,7 +13,7 @@ class UsersController < ApplicationController
   
   def create
     @user = User.new
-    @user.attributes = params[:user]
+    update_user(@user, params[:user])
     if @user.save
       flash[:notice] = "User #{@user.login} successfully created"
       redirect_to users_path
@@ -23,15 +23,31 @@ class UsersController < ApplicationController
   end
   
   def edit
-    @user = User.find(params[:id])
+    if current_user.admin
+      @user = User.find(params[:id])
+    else
+      @user = User.find(current_user.id)
+    end
   end
   
   def update
-    @user = User.find(params[:id])
-    @user.attributes = params[:user]
+    if current_user.admin
+      @user = User.find(params[:id])
+      update_user(@user, params[:user])
+    else
+      @user = User.find(current_user.id)
+      @user.attributes = params[:user]
+    end
     if @user.save
-      flash[:notice] = "Update Successful"
-      redirect_to users_path
+      if current_user.admin
+        flash[:notice] = "Update Successful"
+        redirect_to users_path
+      else
+        flash[:notice] = "Successfully updated profile"
+        redirect_to root_path
+      end
+    else
+      render :action => :edit
     end
   end
   
@@ -44,6 +60,14 @@ class UsersController < ApplicationController
       flash[:error] = "Can not delete the last administrator"
     end
     redirect_to users_path
+  end
+
+  private
+  
+  def update_user(user, params_hash)
+    user.attributes = params[:user]
+    user.login = params[:user][:login]
+    user.admin = params[:user][:admin]
   end
   
 end

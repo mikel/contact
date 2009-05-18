@@ -108,4 +108,19 @@ Feature: Managing users
     And I click the delete link for "bsmith"
     Then I should be on the users page
     And I should see "Can not delete the last administrator"
-    
+  
+  Scenario: User editing their own profile
+    Given I am logged in
+    When I go to the edit user page for "bsmith"
+    Then the "login" field should be disabled
+    And I should not see "admin"
+  
+  Scenario: User updating their own profile
+    Given I am logged in
+    When I go to the edit user page for "bsmith"
+    And I fill in "email" with "sammy@you.com"
+    And I fill in "given name" with "Sammy"
+    And I fill in "family name" with "Jones"
+    And I press "Update"
+    Then I should be on the homepage
+    And I should see "Successfully updated profile"

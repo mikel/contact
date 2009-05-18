@@ -99,4 +99,22 @@ describe User do
     end
   end
   
+  describe "mass assignment protection" do
+    it "should not allow you to mass assign the login" do
+      user = User.new({:login => 'bob'})
+      user.login.should be_nil
+    end
+
+    it "should not allow you to mass assign the admin" do
+      user = User.new({:admin => true})
+      user.admin.should_not be_true
+    end
+
+    it "should allow you to mass assign the login" do
+      user = User.new({:given_name => 'mikel'})
+      user.given_name.should == 'mikel'
+    end
+
+  end
+  
 end

@@ -1,1 +1,9 @@
 <%= flash[:notice] %>
+
+<h1>Welcome to Mailer</h1>
+
+<%- if current_user.admin -%>
+  <%= link_to "Edit Users", users_path %>
+<%- else -%>
+  <%= link_to "Edit Profile", edit_user_path(current_user) %>
+<%- end -%>

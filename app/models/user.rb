@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
   has_many :memberships
   has_many :roles, :through => :memberships
   
+  attr_accessible :given_name, :family_name, :email, :password, :password_confirmation
+  
   # Makes this user a member of the administrator group
   def add_role!(role_name)
     role = Role.find_by_name!(role_name.to_s)

@@ -113,3 +113,7 @@ end
 Then /^I should be on (.+)$/ do |page_name|
   URI.parse(current_url).path.should == path_to(page_name)
 end
+
+Then /^the "([^\"]*)" field should be disabled$/ do |label|
+  field_labeled(label).should be_disabled
+end

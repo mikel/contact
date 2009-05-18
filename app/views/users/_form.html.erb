@@ -1,5 +1,5 @@
 <%= form.label :login %><br />
-<%= form.text_field :login %><br />
+<%= form.text_field :login, :disabled => !current_user.admin %><br />
 <br />
 <%= form.label :email %><br />
 <%= form.text_field :email %><br />
@@ -16,6 +16,7 @@
 <%= form.label :family_name %><br />
 <%= form.text_field :family_name %><br />
 <br />
-<%= form.label :admin %><br />
-<%= form.check_box :admin %><br />
-<br />
+<%- if current_user.admin -%>
+  <%= form.label :admin %><br />
+  <%= form.check_box :admin %><br />
+<%- end -%>
