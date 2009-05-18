@@ -24,14 +24,6 @@ class CreateUsers < ActiveRecord::Migration
       t.timestamps
     end
     
-    User.reset_column_information
-    User.create!(:login => 'admin',
-                 :password => 'mailer',
-                 :password_confirmation => 'mailer',
-                 :given_name => 'Default',
-                 :family_name => 'Admin',
-                 :email => 'admin@nowaythisisadomainname.org.au')
-    
   end
 
   def self.down

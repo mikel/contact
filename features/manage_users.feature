@@ -117,6 +117,7 @@ Feature: Managing users
   
   Scenario: User updating their own profile
     Given I am logged in
+    And there is an admin in the system
     When I go to the edit user page for "bsmith"
     And I fill in "email" with "sammy@you.com"
     And I fill in "given name" with "Sammy"

@@ -15,6 +15,11 @@ Given /^I am logged in as an admin$/ do
 end
 
 Given /^"([^\"]*)" is a.? "([^\"]*)"$/ do |user, role|
-  User.find_by_login(user).add_role!(role)
+  User.find_by_login(user).send("#{role}=", true)
 end
 
+Given /^there is an admin in the system$/ do
+  user = Factory(:user, :login => 'mr_admin')
+  role = Factory(:admin_role)
+  user.admin = true
+end

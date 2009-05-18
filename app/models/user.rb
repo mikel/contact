@@ -5,28 +5,22 @@ class User < ActiveRecord::Base
   has_many :roles, :through => :memberships
   
   attr_accessible :given_name, :family_name, :email, :password, :password_confirmation
-  
-  # Makes this user a member of the administrator group
-  def add_role!(role_name)
-    role = Role.find_by_name!(role_name.to_s)
-    self.roles << role unless self.roles.include?(role)
-  end
-  
-  def remove_role!(role_name)
-    role = Role.find_by_name!(role_name.to_s)
-    self.roles.delete(role) if self.roles.include?(role)
-  end
 
-  # Returns true if this user is an administrator
-  def member_of?(role_name)
-    !!self.roles.find_by_name(role_name.to_s)
+  validate_on_update :check_last_admin?
+  
+  def check_last_admin?
+    if @tried_to_remove_admin && last_admin?
+      errors.add_to_base "Can not remove the last admin from the system."
+    end
   end
   
   def admin=(bool)
     if boolianize(bool)
+      @tried_to_remove_admin = false
       add_role!(:admin)
     else
-      remove_role!(:admin)
+      @tried_to_remove_admin = true
+      remove_role!(:admin) unless last_admin?
     end
   end
   
@@ -35,11 +29,29 @@ class User < ActiveRecord::Base
   end
   
   def last_admin?
-    !User.find(:first, :conditions => ["users.id != ? AND roles.name = 'admin'", self.id],
-                       :joins => [:roles, :memberships])
+    @last_admin ||= !User.find(:first, 
+                               :conditions => ["users.id != ? AND roles.name = 'admin'", self.id],
+                               :joins => [:roles, :memberships])
   end
 
   private
+
+  # Adds this role from the users memberships
+  def add_role!(role_name)
+    role = Role.find_by_name!(role_name.to_s)
+    self.roles << role unless self.roles.include?(role)
+  end
+  
+  # Removes this role from the users memberships
+  def remove_role!(role_name)
+    role = Role.find_by_name!(role_name.to_s)
+    self.roles.delete(role) if self.roles.include?(role)
+  end
+
+  # Returns true if this user is a member of this role
+  def member_of?(role_name)
+    !!self.roles.find_by_name(role_name.to_s)
+  end
   
   def boolianize(bool)
     case bool

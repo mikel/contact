@@ -12,7 +12,7 @@ module AuthenticationHelpers
   
   def make_administrator(user)
     role = Factory(:admin_role)
-    user.add_role!(:admin)
+    user.admin = true
   end
 
 end

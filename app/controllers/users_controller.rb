@@ -38,6 +38,7 @@ class UsersController < ApplicationController
       @user = User.find(current_user.id)
       @user.attributes = params[:user]
     end
+
     if @user.save
       if current_user.admin
         flash[:notice] = "Update Successful"

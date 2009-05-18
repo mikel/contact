@@ -2,41 +2,41 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe User do
 
-  describe "memberships API" do
+  describe "Internal Membership handling (private methods)" do
     it "should add itself to the admin role" do
       user = Factory(:user)
       role = Factory(:admin_role)
-      user.add_role!(:admin)
+      user.send(:add_role!, :admin)
       user.roles.should include(role)
     end
 
     it "should say if it is an admin" do
       user = Factory(:user)
       role = Factory(:admin_role)
-      user.add_role!(:admin)
-      user.member_of?(:admin).should be_true
+      user.send(:add_role!, :admin)
+      user.send(:member_of?, :admin).should be_true
     end
     
     it "should only add any role once" do
       user = Factory(:user)
       role = Factory(:admin_role)
       doing {
-        user.add_role!(:admin)
-        user.add_role!(:admin)
-        user.add_role!(:admin)
+        user.send(:add_role!, :admin)
+        user.send(:add_role!, :admin)
+        user.send(:add_role!, :admin)
       }.should change(Membership, :count).by(1)
     end
     
     it "should raise an error if the role was not found" do
       user = Factory(:user)
-      doing {user.add_role!(:user)}.should raise_error(ActiveRecord::RecordNotFound, "Couldn't find Role with name = user")
+      doing {user.send(:add_role!, :user)}.should raise_error(ActiveRecord::RecordNotFound, "Couldn't find Role with name = user")
     end
     
     it "should remove a role" do
       user = Factory(:user)
       role = Factory(:admin_role)
-      user.add_role!(:admin)
-      doing { user.remove_role!(:admin) }.should change(Membership, :count).by(-1)
+      user.send(:add_role!, :admin)
+      doing { user.send(:remove_role!, :admin) }.should change(Membership, :count).by(-1)
       user.roles.should_not include(role)
     end
   end
@@ -46,7 +46,7 @@ describe User do
       user = Factory(:user)
       role = Factory(:admin_role)
       user.admin = true
-      user.save
+      user.save!
       user.admin.should be_true
     end
     
@@ -58,17 +58,23 @@ describe User do
       user.admin.should be_true
     end
     
-    it "should allow you remove admin rights" do
+    it "should not allow you remove admin rights if it is the only admin" do
       user = Factory(:user)
       role = Factory(:admin_role)
       user.admin = true
       user.save
       user.admin = false
       user.save
-      user.admin.should be_false
+      user.admin.should be_true
     end
 
     it "should handle integer strings passed into admin= for false" do
+      # Setup another admin so we can remove the admin rights
+      user2 = Factory(:user, :login => 'mr_admin')
+      role2 = Factory(:admin_role)
+      user2.admin = true
+      user2.save
+
       user = Factory(:user)
       role = Factory(:admin_role)
       user.admin = true
@@ -97,6 +103,22 @@ describe User do
       user1.should_not be_last_admin
       user2.should_not be_last_admin
     end
+    
+    it "should validate ok if it is the last admin in the system" do
+      user = Factory(:user)
+      role = Factory(:admin_role)
+      user.admin = true
+      user.should be_valid
+    end
+    
+    it "should not validate ok if it is the last admin and trying to change to not an admin" do
+      user = Factory(:user)
+      role = Factory(:admin_role)
+      user.admin = true
+      user.save!
+      user.admin = false
+      user.should_not be_valid
+    end
   end
   
   describe "mass assignment protection" do
@@ -114,7 +136,6 @@ describe User do
       user = User.new({:given_name => 'mikel'})
       user.given_name.should == 'mikel'
     end
-
   end
   
 end
