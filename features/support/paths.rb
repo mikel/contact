@@ -29,7 +29,22 @@ module NavigationHelpers
     when /the edit user page for "(\w+)"/
       user = User.find_by_login($1)
       edit_user_path(user.id)
+      
+    when /the logout page/
+      logout_path
+      
+    when /the login page/
+      login_path
     
+    when /the email templates page/
+      email_templates_path
+      
+    when /the new email templates page/
+      new_email_template_path
+      
+    when /edit the first email template/
+      edit_email_template_path(EmailTemplate.find(:first))
+      
     # Add more page name => path mappings here
     
     else

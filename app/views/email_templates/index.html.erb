@@ -1,0 +1,4 @@
+<h2>Current Email Templates</h2>
+<%- current_user.email_templates.each do |email_template| -%>
+  <%= render :partial => email_template %>
+<%- end -%>

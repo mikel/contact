@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   acts_as_authentic
-  
+
+  has_many :email_templates
   has_many :memberships
   has_many :roles, :through => :memberships
   

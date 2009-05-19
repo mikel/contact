@@ -16,7 +16,3 @@ Feature: Home page
     Then I should be on the homepage
     And I should see "Welcome to Mailer"
     And I should see "Edit Users"
-  
-  
-  
-  

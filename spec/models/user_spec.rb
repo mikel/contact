@@ -138,4 +138,12 @@ describe User do
     end
   end
   
+  describe "template association" do
+    it "should have many templates" do
+      user = Factory(:user)
+      template = Factory(:email_template)
+      doing { user.email_templates << template }.should_not raise_error
+    end
+  end
+  
 end

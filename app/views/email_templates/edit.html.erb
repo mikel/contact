@@ -1,0 +1,6 @@
+<h2>Edit Email Template</h2>
+<% form_for @email_template do |f| %>
+  <%= f.error_messages %>
+  <%= render :partial => "form", :object => f %>
+  <%= f.submit "Update" %>
+<% end %>

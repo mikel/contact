@@ -9,6 +9,6 @@ task :bootstrap => :environment do
   user.login = 'admin'
   Role.create!(:name => 'admin')
   Membership.create!(:user_id => 1, :role_id => 1)
+  user.admin = true
   user.save!
-  user.add_role!('admin')
 end

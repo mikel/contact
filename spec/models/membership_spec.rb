@@ -12,9 +12,4 @@ describe Membership do
     Membership.create!(@valid_attributes)
   end
   
-  it "should add a given membership to a user" do
-    user = Factory(:user)
-    Membership.should respond_to(:add_membership!)
-  end
-  
 end

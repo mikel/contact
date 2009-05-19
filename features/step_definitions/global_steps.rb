@@ -6,6 +6,10 @@ Given /^I am logged in$/ do
   click_button("Login")
 end
 
+Given /^I am logged out$/ do
+  visit path_to("the logout page")
+end
+
 Given /^I am logged in as an admin$/ do
   user = login_user(:make_administrator)
   visit path_to("the new user sessions page")
