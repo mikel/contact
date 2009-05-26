@@ -3,6 +3,7 @@ class EmailTemplatesController < ApplicationController
   before_filter :require_user
   
   def index
+    @email_templates = current_user.email_templates
   end
   
   def new

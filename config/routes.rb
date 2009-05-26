@@ -40,6 +40,11 @@ ActionController::Routing::Routes.draw do |map|
   map.login   '/login',  :controller => 'user_sessions', :action => 'new', :method => 'get'
   map.logout  '/logout', :controller => 'user_sessions', :action => 'destroy', :method => 'delete'
   
-  map.resources :users, :user_sessions, :email_templates
+  map.resources :users, 
+                :user_sessions,
+                :email_templates,
+                :organizations
+
+  map.resources :recipients, { :member => 'black_list', :method => 'delete' }
   
 end

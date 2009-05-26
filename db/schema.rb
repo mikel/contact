@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090518111443) do
+ActiveRecord::Schema.define(:version => 20090521234537) do
 
   create_table "email_templates", :force => true do |t|
     t.string   "title"
@@ -24,6 +24,24 @@ ActiveRecord::Schema.define(:version => 20090518111443) do
     t.integer  "role_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "organizations", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "recipients", :force => true do |t|
+    t.string   "given_name"
+    t.string   "family_name"
+    t.string   "email"
+    t.integer  "undeliverable_count",               :default => 0
+    t.boolean  "black_listed",                      :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "organization_id"
+    t.string   "state",               :limit => 10
   end
 
   create_table "roles", :force => true do |t|
@@ -51,6 +69,7 @@ ActiveRecord::Schema.define(:version => 20090518111443) do
     t.string   "last_login_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "organization_id"
   end
 
 end

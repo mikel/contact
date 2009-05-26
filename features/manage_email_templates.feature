@@ -14,12 +14,26 @@ Feature: Manage Email Templates
     Then I should see "No email templates defined"
     And I should see "Make a new email template"
   
+  Scenario: One template in the system
+    Given I am logged in
+    And there is an email template I made in the system with title "Hello There"
+    And there is an email template I made in the system with title "Going away"
+    When I go to the homepage
+    Then I should see "Hello There"
+    And I should see "Going away"
+
   Scenario: Making a new email template
     Given I am logged in
     When I go to the homepage
     And I follow "Make a new email template"
     Then I should be on the new email templates page
   
+  Scenario: Making a new email template
+    Given I am logged in
+    When I go to the email templates page
+    And I follow "Make a new email template"
+    Then I should be on the new email templates page
+
   Scenario: Saving a new email template
     Given I am logged in
     When I go to the new email templates page

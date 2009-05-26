@@ -1,0 +1,6 @@
+<h2>Editing <%= @recipient.name %></h2>
+<% form_for @recipient do |f| %>
+  <%= f.error_messages %>
+  <%= render :partial => "form", :object => f %>
+  <%= f.submit "Update" %>
+<% end %>

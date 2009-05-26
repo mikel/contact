@@ -1,0 +1,3 @@
+<%= organization.name %>
+  <%= link_to "Edit", edit_organization_path(organization) %>
+  <%= link_to "Delete", organization_path(organization), :method => :delete, :confirm => "Are you sure?", :id => "delete_#{organization.id}" %>

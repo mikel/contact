@@ -16,6 +16,9 @@
 <%= form.label :family_name %><br />
 <%= form.text_field :family_name %><br />
 <br />
+<%= form.label :organization %><br />
+<%= form.collection_select :organization_id, Organization.all(:order => 'name'), :id, :name, :include_blank => 'Please select Organization' %><br />
+<br />
 <%- if current_user.admin -%>
   <%= form.label :admin %><br />
   <%= form.check_box :admin %><br />

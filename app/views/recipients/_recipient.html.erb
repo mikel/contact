@@ -1,0 +1,4 @@
+<%= recipient.name %>
+  <%= link_to "Edit", edit_recipient_path(recipient) %>
+  <%= link_to "Black List", black_list_recipient_path(recipient), :method => :delete, :confirm => "Are you sure you want to black list this recipient?", :id => "black_list_#{recipient.id}" %>
+  <%= link_to "Delete", recipient_path(recipient), :method => :delete, :confirm => "Deleting is primarily for invalid records, are you sure?", :id => "delete_#{recipient.id}" %>

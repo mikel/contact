@@ -1,0 +1,15 @@
+<%= form.label :given_name %><br />
+<%= form.text_field :given_name %><br />
+<br />
+<%= form.label :family_name %><br />
+<%= form.text_field :family_name %><br />
+<br />
+<%= form.label :email %><br />
+<%= form.text_field :email %><br />
+<br />
+<%= form.label :black_listed %><br />
+<%= form.check_box :black_listed %><br />
+<br />
+<%= form.label :undeliverable_count %><br />
+<%= select("recipient", :undeliverable_count, ((0..5).map { |i| [i,i] })) %><br />
+<br />

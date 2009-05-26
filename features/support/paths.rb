@@ -26,7 +26,7 @@ module NavigationHelpers
     when /the new user page/
       new_user_path
 
-    when /the edit user page for "(\w+)"/
+    when /the edit user page for "([^\"]*)"/
       user = User.find_by_login($1)
       edit_user_path(user.id)
       
@@ -44,6 +44,27 @@ module NavigationHelpers
       
     when /edit the first email template/
       edit_email_template_path(EmailTemplate.find(:first))
+      
+    when /the recipients page/
+      recipients_path
+    
+    when /the new recipient page/
+      new_recipient_path
+    
+    when /edit page for recipient "([^\"]*)"$/
+      first, last = $1.split
+      recipient = Recipient.find_by_given_name_and_family_name(first, last)
+      edit_recipient_path(recipient)
+    
+    when /the organizations page/
+      organizations_path
+    
+    when /the new organization page/
+      new_organization_path
+    
+    when /the edit page for organization "([^\"]*)"$/
+      org = Organization.find_by_name($1)
+      edit_organization_path(org)
       
     # Add more page name => path mappings here
     

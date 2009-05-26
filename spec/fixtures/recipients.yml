@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  given_name: MyString
+  family_name: MyString
+  email: MyString
+  undeliverable_count: 1
+  black_listed: false
+
+two:
+  given_name: MyString
+  family_name: MyString
+  email: MyString
+  undeliverable_count: 1
+  black_listed: false

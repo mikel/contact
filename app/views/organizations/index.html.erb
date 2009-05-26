@@ -1,0 +1,10 @@
+<%- if flash -%>
+  <p><%= flash[:notice] -%>
+     <%= flash[:error] -%></p>
+<%- end -%>
+
+<%= render :partial => 'organization', :collection => @organizations %>
+
+<p>
+  <%= link_to "New Organization", new_organization_path %>
+</p>

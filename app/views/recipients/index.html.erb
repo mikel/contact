@@ -1,0 +1,6 @@
+<h2>Current Recipients</h2>
+<%= link_to "Add a recipient", new_recipient_path %>
+<br />
+
+<%= render :partial => 'recipient', :collection => @recipients %>
+

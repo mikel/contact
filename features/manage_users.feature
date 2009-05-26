@@ -36,6 +36,7 @@ Feature: Managing users
     And I fill in "email" with "mikel@me.com"
     And I fill in "password" with "1234abcd"
     And I fill in "password confirmation" with "1234abcd"
+    And I select "Sydney" from "user_organization_id"
     And I press "Create"
     Then I should be on the users page
     And I should see "User mlindsaar successfully created"

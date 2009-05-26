@@ -3,11 +3,18 @@ class User < ActiveRecord::Base
 
   has_many :email_templates
   has_many :memberships
-  has_many :roles, :through => :memberships
+  has_many :recipients,   :through => :organization
+  has_many :roles,        :through => :memberships
+
+  belongs_to :organization
   
-  attr_accessible :given_name, :family_name, :email, :password, :password_confirmation
+  attr_accessible :given_name, :family_name, :email,
+                  :password, :password_confirmation,
+                  :organization_id
 
   validate_on_update :check_last_admin?
+  validates_associated :organization
+  validates_presence_of :organization_id
   
   def check_last_admin?
     if @tried_to_remove_admin && last_admin?

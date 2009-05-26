@@ -141,8 +141,45 @@ describe User do
   describe "template association" do
     it "should have many templates" do
       user = Factory(:user)
-      template = Factory(:email_template)
-      doing { user.email_templates << template }.should_not raise_error
+      email_template = Factory(:email_template)
+      doing { user.email_templates << email_template }.should_not raise_error
+    end
+    
+    it "should have an templates" do
+      user = Factory(:user)
+      email_template = Factory(:email_template)
+      user.email_templates << email_template
+      user.email_templates.should include(email_template)
+    end
+  end
+  
+  describe "organization association" do
+    it "should belong to an organization" do
+      user = Factory(:user)
+      organization = Factory(:organization)
+      doing { user.organization = organization }.should_not raise_error
+    end
+    
+    it "should have an organization" do
+      user = Factory(:user)
+      organization = Factory(:organization)
+      user.organization = organization
+      user.organization.should == organization
+    end
+    
+    it "should be invalid without an organization" do
+      user = Factory(:user)
+      user.organization = nil
+      user.should_not be_valid
+    end
+  end
+  
+  describe "recipients association through organizations" do
+    it "should have a proxy association to recipients that references the organziation" do
+      organization = Factory(:organization)
+      user = Factory(:user, :organization => organization)
+      recipient = Factory(:recipient, :organization => organization)
+      user.recipients.should include(recipient)
     end
   end
   

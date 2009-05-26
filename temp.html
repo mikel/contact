@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Cucumber</title>
+    <style type="text/css">
+
+
+
+
+
+.cucumber {
+  background: black;
+  color: white;
+  padding: 1em;
+}
+.cucumber .passed {
+  color: green;
+}
+.cucumber .undefined {
+  color: yellow;
+}
+.cucumber .pending {
+  color: yellow;
+}
+.cucumber .failed {
+  color: red;
+}
+.cucumber .skipped {
+  color: cyan;
+}
+.cucumber .outline {
+  color: cyan;
+}
+.cucumber .param {
+  font-weight: bold;
+}
+.cucumber a {
+  text-decoration: none;
+  color: inherit;
+}
+.cucumber a:hover {
+  text-decoration: underline;
+}
+.cucumber a:visited {
+  font-weight: normal;
+}
+.cucumber ol {
+  list-style: none;
+}
+.cucumber .stats {
+  margin: 2em;
+}
+.cucumber .summary ul.features li {
+  display: inline;
+}
+.cucumber .backtrace {
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 1em;
+}
+    </style>
+  </head>
+  <body>
+    <div class="cucumber">
+      <div class="feature">
+        <h2>Feature: Manage Recipients</h2>
+        <p>
+In order to be able to send an email to our public          <br/>
+As a user          <br/>
+I want to be able to manage recipients          <br/>
+        </p>
+        <div class="scenario">
+          <h3>Scenario: Not being logged in and trying to access recipients</h3>
+          <ol>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_7">
+              <div>
+Given I am logged out              </div>
+            </li>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_8">
+              <div>
+When I go to &lt;span&gt;the recipients page&lt;/span&gt;              </div>
+            </li>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_9">
+              <div>
+Then I should be on &lt;span&gt;the login page&lt;/span&gt;              </div>
+            </li>
+          </ol>
+        </div>
+        <div class="scenario">
+          <h3>Scenario: No recipients in the system</h3>
+          <ol>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_12">
+              <div>
+Given I am logged in              </div>
+            </li>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_13">
+              <div>
+When I go to &lt;span&gt;the recipients page&lt;/span&gt;              </div>
+            </li>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_14">
+              <div>
+Then I should see &quot;&lt;span&gt;Add a recipient&lt;/span&gt;&quot;              </div>
+            </li>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_15">
+              <div>
+And I should not see &quot;&lt;span&gt;Edit&lt;/span&gt;&quot;              </div>
+            </li>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_16">
+              <div>
+And I should not see &quot;&lt;span&gt;Delete&lt;/span&gt;&quot;              </div>
+            </li>
+          </ol>
+        </div>
+        <div class="scenario">
+          <h3>Scenario: One recipient in the system</h3>
+          <ol>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_19">
+              <div>
+Given I am logged in              </div>
+            </li>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_20">
+              <div>
+And there is a recipient I added in the system called &quot;&lt;span&gt;Mikel Lindsaar&lt;/span&gt;&quot;              </div>
+            </li>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_21">
+              <div>
+When I go to &lt;span&gt;the recipients page&lt;/span&gt;              </div>
+            </li>
+            <li class="failed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_22">
+              <div>
+Then I should see &quot;&lt;span&gt;Mikel Lindsaar&lt;/span&gt;&quot;              </div>
+              <pre class="failed">expected the following element's content to include &quot;Mikel Lindsaar&quot;:
+Current RecipientsAdd a recipient (Spec::Expectations::ExpectationNotMetError)
+/Users/mikel/Rails/mailer/features/step_definitions/webrat_steps.rb:94:in `/^I should see &quot;([^\&quot;]*)&quot;$/'
+/Users/mikel/Rails/mailer/features/manage_recipients.feature:22:in `Then I should see &quot;Mikel Lindsaar&quot;'</pre>
+            </li>
+            <li class="skipped" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_23">
+              <div>
+And I should see &quot;&lt;span&gt;Edit&lt;/span&gt;&quot;              </div>
+            </li>
+            <li class="skipped" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_24">
+              <div>
+And I should see &quot;&lt;span&gt;Delete&lt;/span&gt;&quot;              </div>
+            </li>
+          </ol>
+        </div>
+        <div class="scenario">
+          <h3>Scenario: Going to the new recipient page</h3>
+          <ol>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_27">
+              <div>
+Given I am logged in              </div>
+            </li>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_28">
+              <div>
+When I go to &lt;span&gt;the recipients page&lt;/span&gt;              </div>
+            </li>
+            <li class="failed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_29">
+              <div>
+And I follow &quot;&lt;span&gt;Add a recipient&lt;/span&gt;&quot;              </div>
+              <pre class="failed">No action responded to new. Actions: index (ActionController::UnknownAction)
+(eval):2:in `click_link'
+/Users/mikel/Rails/mailer/features/step_definitions/webrat_steps.rb:19:in `/^I follow &quot;([^\&quot;]*)&quot;$/'
+/Users/mikel/Rails/mailer/features/manage_recipients.feature:29:in `And I follow &quot;Add a recipient&quot;'</pre>
+            </li>
+            <li class="skipped" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_30">
+              <div>
+Then I should be on &lt;span&gt;the new recipient page&lt;/span&gt;              </div>
+            </li>
+          </ol>
+        </div>
+        <div class="scenario">
+          <h3>Scenario: Adding a new recipient</h3>
+          <ol>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_33">
+              <div>
+Given I am logged in              </div>
+            </li>
+            <li class="failed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_34">
+              <div>
+And I am on &lt;span&gt;the new recipient page&lt;/span&gt;              </div>
+              <pre class="failed">No action responded to new. Actions: index (ActionController::UnknownAction)
+(eval):2:in `visit'
+/Users/mikel/Rails/mailer/features/step_definitions/webrat_steps.rb:7:in `/^I am on (.+)$/'
+/Users/mikel/Rails/mailer/features/manage_recipients.feature:34:in `And I am on the new recipient page'</pre>
+            </li>
+            <li class="skipped" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_35">
+              <div>
+When I fill in &quot;&lt;span&gt;Given Name&lt;/span&gt;&quot; with &quot;&lt;span&gt;Mikel&lt;/span&gt;&quot;              </div>
+            </li>
+            <li class="skipped" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_36">
+              <div>
+And I fill in &quot;&lt;span&gt;Family Name&lt;/span&gt;&quot; with &quot;&lt;span&gt;Lindsaar&lt;/span&gt;&quot;              </div>
+            </li>
+            <li class="skipped" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_37">
+              <div>
+And I press &quot;&lt;span&gt;Create&lt;/span&gt;&quot;              </div>
+            </li>
+            <li class="skipped" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_38">
+              <div>
+Then I should be on &lt;span&gt;the recipients page&lt;/span&gt;              </div>
+            </li>
+            <li class="skipped" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_39">
+              <div>
+And I should see &quot;&lt;span&gt;Mikel Lindsaar&lt;/span&gt;&quot;              </div>
+            </li>
+          </ol>
+        </div>
+        <div class="scenario">
+          <h3>Scenario: Editing a recipient</h3>
+          <ol>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_42">
+              <div>
+Given I am logged in              </div>
+            </li>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_43">
+              <div>
+And there is a recipient I added in the system called &quot;&lt;span&gt;Mikel Lindsaar&lt;/span&gt;&quot;              </div>
+            </li>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_44">
+              <div>
+And I am on &lt;span&gt;the recipients page&lt;/span&gt;              </div>
+            </li>
+            <li class="failed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_45">
+              <div>
+When I follow &quot;&lt;span&gt;Edit&lt;/span&gt;&quot;              </div>
+              <pre class="failed">Could not find link with text or title or id &quot;Edit&quot; (Webrat::NotFoundError)
+(eval):2:in `click_link'
+/Users/mikel/Rails/mailer/features/step_definitions/webrat_steps.rb:19:in `/^I follow &quot;([^\&quot;]*)&quot;$/'
+/Users/mikel/Rails/mailer/features/manage_recipients.feature:45:in `When I follow &quot;Edit&quot;'</pre>
+            </li>
+            <li class="skipped" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_46">
+              <div>
+Then I should be on &lt;span&gt;the edit page for recipient &quot;Mikel Lindsaar&quot;&lt;/span&gt;              </div>
+            </li>
+          </ol>
+        </div>
+        <div class="scenario">
+          <h3>Scenario: Deleting a recipient</h3>
+          <ol>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_49">
+              <div>
+Given I am logged in              </div>
+            </li>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_50">
+              <div>
+And no recipients in the system              </div>
+            </li>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_51">
+              <div>
+And there is a recipient I added in the system called &quot;&lt;span&gt;Mikel Lindsaar&lt;/span&gt;&quot;              </div>
+            </li>
+            <li class="passed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_52">
+              <div>
+And I am on &lt;span&gt;the recipients page&lt;/span&gt;              </div>
+            </li>
+            <li class="failed" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_53">
+              <div>
+When I follow &quot;&lt;span&gt;Black List&lt;/span&gt;&quot;              </div>
+              <pre class="failed">Could not find link with text or title or id &quot;Black List&quot; (Webrat::NotFoundError)
+(eval):2:in `click_link'
+/Users/mikel/Rails/mailer/features/step_definitions/webrat_steps.rb:19:in `/^I follow &quot;([^\&quot;]*)&quot;$/'
+/Users/mikel/Rails/mailer/features/manage_recipients.feature:53:in `When I follow &quot;Black List&quot;'</pre>
+            </li>
+            <li class="skipped" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_54">
+              <div>
+Then I should be on &lt;span&gt;the recipients page&lt;/span&gt;              </div>
+            </li>
+            <li class="skipped" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_55">
+              <div>
+And I should see &quot;&lt;span&gt;Recipient successfully black listed&lt;/span&gt;&quot;              </div>
+            </li>
+            <li class="skipped" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_56">
+              <div>
+And there should be &lt;span&gt;1&lt;/span&gt; recipient in the system              </div>
+            </li>
+            <li class="skipped" id="_Users_mikel_Rails_mailer_features_manage_recipients_feature_57">
+              <div>
+And &quot;&lt;span&gt;Mikel Lindsaar&lt;/span&gt;&quot; should be black listed              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
