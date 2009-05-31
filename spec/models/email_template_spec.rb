@@ -8,12 +8,6 @@ describe EmailTemplate do
       template.title = nil
       template.should_not be_valid
     end
-
-    it "should require a body" do
-      template = Factory.build(:email_template)
-      template.body = nil
-      template.should_not be_valid
-    end
   end
   
   describe "associations" do

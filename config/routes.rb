@@ -43,7 +43,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :users, 
                 :user_sessions,
                 :email_templates,
-                :organizations
+                :organizations,
+                :messages
 
   map.resources :recipients, { :member => 'black_list', :method => 'delete' }
   

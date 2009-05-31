@@ -9,19 +9,33 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090521234537) do
+ActiveRecord::Schema.define(:version => 20090531073442) do
 
   create_table "email_templates", :force => true do |t|
     t.string   "title"
-    t.text     "body"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "html_part"
+    t.text     "plain_part"
   end
 
   create_table "memberships", :force => true do |t|
     t.integer  "user_id"
     t.integer  "role_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "messages", :force => true do |t|
+    t.string   "title"
+    t.string   "source"
+    t.string   "state"
+    t.boolean  "multipart"
+    t.integer  "user_id"
+    t.integer  "email_template_id"
+    t.text     "html_part"
+    t.text     "plain_part"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

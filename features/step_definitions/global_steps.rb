@@ -27,3 +27,7 @@ Given /^there is an admin in the system$/ do
   role = Factory(:admin_role)
   user.admin = true
 end
+
+Given /^there is a file called "([^\"]*)"$/ do |filename|
+  make_file(filename).should be_true
+end

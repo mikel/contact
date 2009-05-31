@@ -1,0 +1,5 @@
+<p>
+  <%= f.label :file_data, "Select filename" %>
+  <%= f.file_field :file_data %>
+</p>
+<%= f.hidden_field :state, :value => 'file_uploaded' %>

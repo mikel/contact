@@ -87,6 +87,9 @@ When /^I choose "([^\"]*)"$/ do |field|
 end
 
 When /^I attach the file at "([^\"]*)" to "([^\"]*)"$/ do |path, field|
+  unless path =~ /^[\.\/]/
+    path = File.join(RAILS_ROOT, 'features', 'resources', path)
+  end
   attach_file(field, path)
 end
 
@@ -99,12 +102,12 @@ Then /^I should not see "([^\"]*)"$/ do |text|
 end
 
 Then /^the "([^\"]*)" field should contain "([^\"]*)"$/ do |field, value|
-      field_labeled(field).value.should =~ /#{value}/
-  end
+  field_labeled(field).value.should =~ /#{value}/
+end
 
 Then /^the "([^\"]*)" field should not contain "([^\"]*)"$/ do |field, value|
-      field_labeled(field).value.should_not =~ /#{value}/
-  end
+  field_labeled(field).value.should_not =~ /#{value}/
+end
     
 Then /^the "([^\"]*)" checkbox should be checked$/ do |label|
   field_labeled(label).should be_checked

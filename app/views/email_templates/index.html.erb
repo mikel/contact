@@ -1,4 +1,8 @@
 <h2>Current Email Templates</h2>
 <%= link_to "Make a new email template", new_email_template_path %>
 <br />
-<%= render :partial => 'email_template', :collection => @email_templates %>
+<%- if @email_templates.empty? -%>
+  No email templates defined
+<%- else -%>
+  <%= render :partial => 'email_template', :collection => @email_templates %>
+<%- end -%>

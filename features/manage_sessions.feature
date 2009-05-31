@@ -37,3 +37,10 @@ Feature: Manage sessions
     When I go to the homepage
     Then I should be on the homepage
   
+  Scenario: Logging out
+    Given I am logged in
+    When I follow "Logout"
+    Then I should be on the logout page
+  
+  
+  

@@ -1,0 +1,19 @@
+Welcome to Mailer, the new Rails based Newsletter / Mailing program
+===================================================================
+
+Mailer is a Ruby on Rails app designed to serve email newsletters and 
+mailing lists.
+
+This is actually a proper version of a mailer I made on Rails 1.2.x 
+which needs a rewrite and update. Thought I would do it properly and 
+let anyone else who is interested in on the fun.
+
+Mailer's purpose is to allow you to send out emails to a mailing list
+without having to use the commercial email companies. Much like PHPList's
+purpose, it has the advantages of being on Rails and Ruby, making it 
+extensible, and easy.
+
+If you have suggestions, feel free to email me, or visit the mailer 
+github site, and fork and code or just submit patches.
+
+Mikel

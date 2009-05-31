@@ -8,6 +8,12 @@ Feature: Manage Recipients
     When I go to the recipients page
     Then I should be on the login page
   
+  Scenario: Going to add a new recipient
+    Given I am logged in
+    When I go to the homepage
+    And I follow "Recipients"
+    Then I should be on the recipients page
+  
   Scenario: No recipients in the system
     Given I am logged in
     When I go to the recipients page

@@ -31,7 +31,7 @@ module NavigationHelpers
       edit_user_path(user.id)
       
     when /the logout page/
-      logout_path
+      new_user_session_path
       
     when /the login page/
       login_path
@@ -65,6 +65,9 @@ module NavigationHelpers
     when /the edit page for organization "([^\"]*)"$/
       org = Organization.find_by_name($1)
       edit_organization_path(org)
+    
+    when /the new message page/
+      new_message_path
       
     # Add more page name => path mappings here
     
