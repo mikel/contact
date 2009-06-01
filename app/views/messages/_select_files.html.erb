@@ -1,0 +1,9 @@
+<p>
+  <%= f.label :file_data, "HTML File" %>:
+  <%= f.file_field :html_file_data %>
+</p>
+<p>
+  <%= f.label :file_data, "Zip File" %>:
+  <%= f.file_field :zip_file_data %>
+</p>
+<%= f.hidden_field :state, :value => 'file_uploaded' %>
