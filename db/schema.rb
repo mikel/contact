@@ -25,15 +25,6 @@ ActiveRecord::Schema.define(:version => 20090601032836) do
     t.datetime "updated_at"
   end
 
-  create_table "email_templates", :force => true do |t|
-    t.string   "title"
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "html_part"
-    t.text     "plain_part"
-  end
-
   create_table "memberships", :force => true do |t|
     t.integer  "user_id"
     t.integer  "role_id"
@@ -50,6 +41,7 @@ ActiveRecord::Schema.define(:version => 20090601032836) do
     t.integer  "email_template_id"
     t.text     "html_part"
     t.text     "plain_part"
+    t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

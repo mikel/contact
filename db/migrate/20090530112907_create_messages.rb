@@ -10,6 +10,7 @@ class CreateMessages < ActiveRecord::Migration
       t.text    :html_part
       t.text    :plain_part
 
+      t.string  :type
       t.timestamps
     end
   end

@@ -7,5 +7,11 @@ end
 
 Given /^the email template entitled "([^\"]*)" has an image attached called "([^\"]*)"$/ do |title, image_name|
   template = EmailTemplate.find_by_title(title)
-  attachment = Factory(:attachment, :data => File.read(File.join(RAILS_ROOT, 'spec', 'resources', 'rails.png')))
+  data = File.read(File.join(RAILS_ROOT, 'spec', 'resources', image_name))
+  attachment = Factory(:attachment,
+                       :filename => 'rails.png',
+                       :directory => 'images',
+                       :data => data, 
+                       :content_type => 'image/png',
+                       :message_id => template.id)
 end

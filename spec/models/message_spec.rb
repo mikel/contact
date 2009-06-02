@@ -123,6 +123,23 @@ describe Message do
       @message.html_part.should == @email_template.html_part
       @message.plain_part.should == @email_template.plain_part
     end
+    
+    it "should copy the email template's attachments over" do
+      @email_template = Factory(:email_template)
+      data = File.read(File.join(RAILS_ROOT, 'spec', 'resources', 'rails.png'))
+      attachment = Factory(:attachment,
+                           :filename => 'rails.png',
+                           :directory => 'image',
+                           :data => data, 
+                           :content_type => 'image/png',
+                           :message_id => @email_template.id)
+      @message = Message.new(:title => "New Email", :email_template => @email_template)
+      @message.state = 'template_selected'
+      @message.save
+      @message.next_step
+      @message.attachments.count.should == 1
+      @message.attachments.first.filename.should == 'rails.png'
+    end
 
     it "should set return edit_content if the state is set to 'file_uploaded'" do
       @message = Message.new

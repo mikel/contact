@@ -16,6 +16,9 @@ class Message < ActiveRecord::Base
     when 'template_selected'
       self.html_part = email_template.html_part
       self.plain_part = email_template.plain_part
+      email_template.attachments.each do |attachment|
+        self.attachments.create!(attachment.attributes)
+      end
       'edit_content'
     when 'file_uploaded'
       self.save

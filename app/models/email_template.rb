@@ -1,6 +1,3 @@
-class EmailTemplate < ActiveRecord::Base
+class EmailTemplate < Message
   
-  belongs_to :user
-  validates_presence_of :title
-
 end
