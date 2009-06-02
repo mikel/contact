@@ -7,18 +7,25 @@ module FileHelpers
   # holds an explanation.
   def make_file(filename)
     
-    filename = defaultize(filename)
+    filename = defaultize(filename.to_s)
     
     case filename
     
-    when %r[resources/email.zip]
-      # file has a basic email in it with an index.html
-      # a plain.txt file and a single image
+    when %r[simple_email/index.html]
+      # Email file containing one link to an image
+      created_filename = filename
+    when %r[resources/images.zip]
+      # contains the images folder
+      created_filename = filename
     
-    # Add more filename => file creation routines here
+    when %r[rails.png]
+      # Sample graphic
+      created_filename = filename
     
+    else
+
     end
-    check(filename)
+    check_exists(created_filename.to_s)
     
   end
 
@@ -32,9 +39,9 @@ module FileHelpers
     end
   end
   
-  def check(filename)
+  def check_exists(filename)
     if file_exists?(filename)
-      return true
+      return filename
     else
       raise missing_file(filename)
     end
@@ -45,8 +52,8 @@ module FileHelpers
   end
 
   def missing_file(filename)
-    raise "Can't find file \"#{filename}\".\n" +
-      "Please ensure this file exists"
+    raise "Can't find definition for file \"#{filename}\".\n" +
+      "Please ensure this file exists and is defined in 'file_resources.rb'"
   end
   
 end

@@ -1,0 +1,7 @@
+<% form_for @message, :html => { :multipart => (@message.next_step == 'select_files') } do |f| -%>
+  <%= f.error_messages %>
+
+  <%= render :partial => @message.next_step, :locals => { :f => f } %>
+  
+  <%= f.submit "Next" %>
+<% end -%>

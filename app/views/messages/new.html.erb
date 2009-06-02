@@ -1,6 +1,20 @@
-<% form_for @message, :html => { :multipart => (@message.next_step == 'select_file') } do |f| -%>
-
-  <%= render :partial => @message.next_step, :locals => { :f => f } %>
+<% form_for @message, :html => { :multipart => (@message.next_step == 'select_files') } do |f| -%>
+  <%= f.error_messages %>
+  <p>
+  <%= f.label :title %>
+  <%= f.text_field :title %>
+  <br />
+  <%= f.label :source_edit, "Plain Text Only" %>
+  <%= f.radio_button("source", "edit") %>
+  <%- if current_user.email_templates.count > 0 -%>
+    <br />
+    <%= f.label :source_template, "From Template" %>
+    <%= f.radio_button("source", "template") %>
+  <%- end -%>
+  <br />
+  <%= f.label :source_upload, "From Uploaded Files" %>
+  <%= f.radio_button("source", "upload") %>
+  </p>
   
   <%= f.submit "Next" %>
 <% end -%>

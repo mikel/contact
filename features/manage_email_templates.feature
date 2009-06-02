@@ -37,7 +37,7 @@ Feature: Manage Email Templates
     Given I am logged in
     When I go to the new email templates page
     And I fill in "title" with "First email"
-    And I fill in "body" with "From mikel@me.com"
+    And I fill in "Plain Part" with "From mikel@me.com"
     And I press "Create"
     Then I should be on the email templates page
     And I should see "First email"
@@ -45,7 +45,7 @@ Feature: Manage Email Templates
   Scenario: Attempting to save an invalid template
     Given I am logged in
     When I go to the new email templates page
-    And I fill in "body" with "From mikel@me.com"
+    And I fill in "Plain Part" with "From mikel@me.com"
     And I press "Create"
     Then I should see "prohibited this email template from being saved"
   

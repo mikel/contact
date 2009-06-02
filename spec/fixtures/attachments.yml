@@ -1,0 +1,21 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  message_id: 1
+  filename: MyString
+  directory: MyString
+  data: 
+  thumbnail: 
+  height: 1
+  width: 1
+  size: 1
+
+two:
+  message_id: 1
+  filename: MyString
+  directory: MyString
+  data: 
+  thumbnail: 
+  height: 1
+  width: 1
+  size: 1

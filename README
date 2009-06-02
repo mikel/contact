@@ -1,9 +1,19 @@
-== Welcome to Mailer
+== Welcome to Contact
 
-Mailer is a Ruby on Rails app designed to server newsletters and mass mailouts.
+Contact is a Ruby on Rails app designed to server newsletters and
+mass mailouts.
 
-This is actually a proper version of a mailer I made on Rails 1.2.x which needs
-a rewrite and update.  Thought I would do it properly and let anyone else who
-is interested in on the fun.
+This is actually a proper version of a mailer I made on Rails 1.2.x
+which needs a rewrite and update.  Thought I would do it properly
+and let anyone else who is interested in on the fun.
+
+Contact's purpose is to allow you to send out emails to
+a mailing list without having to use the commercial email
+companies.  Much like PHPList's purpose, it has the advantages
+of being on Rails and Ruby, making it extensible, and easy.
+
+If you have suggestions, feel free to email me at raasdnil@gmail.com,
+or visit the contact github site: http://contact.github.com, 
+and fork and code or just submit patches.
 
 Mikel

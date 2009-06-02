@@ -7,3 +7,9 @@
   <%= f.label :plain_part, "Plain Text" %>
   <%= f.text_area :plain_part %>
 </p>
+
+<%- unless @message.attachments.empty? -%>
+<h2>Attached Files:</h2>
+<%= render :partial => 'attachments/attachment', :collection => @message.attachments %>
+
+<%- end -%>

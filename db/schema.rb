@@ -9,7 +9,21 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090531073442) do
+ActiveRecord::Schema.define(:version => 20090601032836) do
+
+  create_table "attachments", :force => true do |t|
+    t.integer  "message_id"
+    t.string   "filename"
+    t.string   "directory"
+    t.binary   "data"
+    t.binary   "thumbnail"
+    t.string   "content_type"
+    t.integer  "height"
+    t.integer  "width"
+    t.integer  "size"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "email_templates", :force => true do |t|
     t.string   "title"
