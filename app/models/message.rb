@@ -8,7 +8,6 @@ class Message < ActiveRecord::Base
   
   def must_have_recipients
     if no_recipients
-      self.state = 'select_recipients'
       errors.add_to_base 'Please select at least one recipient' 
       false
     else
@@ -24,45 +23,41 @@ class Message < ActiveRecord::Base
 
   belongs_to :email_template
   belongs_to :user
+  
+  def before_save
+    update_template if changes.include?('email_template') || changes.include?('email_template_id')
+    self.multipart = true if state == 'new' && source == 'upload'
+    do_add_recipients if @recipient_selected
+    do_add_group if @group_selected
+  end
 
-  def next_step
-    return @state if @state
-    @state = case state
-    when nil
-      initial_step
-    when 'template_selected'
-      self.attributes = email_template.copy_attributes
-      email_template.attachments.each do |attachment|
-        self.attachments.create!(attachment.attributes)
-      end
-      'edit_content'
-    when 'file_uploaded'
-      'edit_content'
-    when 'content_edited'
-      'select_recipients'
-    when 'recipients_selected'
-      if @recipient_selected.blank? && @group_selected.blank? && must_have_recipients
-        'schedule_mailout'
-      else
-        do_add_recipients unless @recipient_selected.blank?
-        do_add_group unless @group_selected.blank?
-        'select_recipients'
-      end
-    else
-      state
+  def update_template
+    self.attributes = email_template.copy_attributes
+    email_template.attachments.each do |attachment|
+      self.attachments.create!(attachment.attributes)
     end
   end
 
-  def initial_step
-    case source
-    when 'edit'
-      self.update_attribute(:multipart, false)
+  def next_step
+    case
+    when state == 'new' && source == 'edit'
       'edit_content'
-    when 'template'
+    when state == 'new' && source == 'template'
       'select_template'
-    when 'upload'
-      self.update_attribute(:multipart, true)
+    when state == 'new' && source == 'upload'
       'select_files'
+    when state == 'content_edited'
+      'select_recipients'
+    when state == 'file_uploaded'
+      'edit_content'
+    when state == 'template_selected'
+      'edit_content'
+    when state == 'recipients_selected'
+      if @recipient_selected.blank? && @group_selected.blank? && must_have_recipients
+        'schedule_mailout'
+      else
+        'select_recipients'
+      end
     else
       'new'
     end
@@ -98,8 +93,9 @@ class Message < ActiveRecord::Base
 
 
   def do_add_group
-    Addressee.create!(:message_id => self.id, :group_id => @group_selected)
-    self.state = 'select_recipients'
+    unless Addressee.find(:first, :conditions => {:message_id => self.id, :group_id => @group_selected})
+      Addressee.create!(:message_id => self.id, :group_id => @group_selected)
+    end
   end
 
   def do_add_recipients
@@ -113,7 +109,7 @@ class Message < ActiveRecord::Base
       self.errors.add_to_base("No recipient found with '#{recipient_detail}'") unless @recipient
     end
 
-    if @recipient
+    if @recipient && !recipients.include?(@recipient)
       Addressee.create!(:message_id => self.id, :recipient_id => @recipient.id)
     end
   end

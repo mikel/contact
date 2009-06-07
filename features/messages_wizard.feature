@@ -134,21 +134,7 @@ Feature: Messages Wizard
     And the "message" with "title" of "My new email" should have a "group" with "name" of "Public"
     And the "message" with "title" of "My new email" should have a "recipient" with "given_name" of "Mikel"
 
-  Scenario: Selecting no recipients for a message
-    Given I am logged in
-    And there is a group in the system called "Public"
-    And there is a recipient I added in the system called "Mikel Lindsaar"
-    When I follow "New Message"
-    And I fill in "Title" with "My new email"
-    And I choose "Plain Text Only"
-    And I press "Next"
-    And I fill in "Plain Text" with "This is the email I am sending out"
-    And I press "Next"
-    And I press "Next"
-    Then I should see "Select Recipients"
-    And I should see "Please select at least one recipient"
-
-  Scenario: Saving a created message
+  Scenario: Trying to add the same recipient twice
     Given I am logged in
     And there is a group in the system called "Public"
     And there is a recipient I added in the system called "Mikel Lindsaar"
@@ -160,14 +146,58 @@ Feature: Messages Wizard
     And I press "Next"
     And I fill in "Add Recipient" with "Mikel Lindsaar"
     And I press "Next"
+    And I fill in "Add Recipient" with "Mikel Lindsaar"
+    And I press "Next"
+    Then I should see "Select Recipients"
+    And the message entitled "My new email" should have one recipient
+
+  Scenario: Trying to add the same group twice
+    Given I am logged in
+    And there is a group in the system called "Public"
+    When I follow "New Message"
+    And I fill in "Title" with "My new email"
+    And I choose "Plain Text Only"
+    And I press "Next"
+    And I fill in "Plain Text" with "This is the email I am sending out"
+    And I press "Next"
+    And I select "Public" from "Add Group"
+    And I press "Next"
+    And I select "Public" from "Add Group"
+    And I press "Next"
+    Then I should see "Select Recipients"
+    And the message entitled "My new email" should have one group
+    
+  Scenario: Selecting no recipients for a message
+    Given I am logged in
+    And there is a message called "My Email" in the system
+    When I go to the edit page for "Message" with a "title" of "My Email"
+    And I press "Next"
+    Then I should see "Select Recipients"
+    And I should see "Please select at least one recipient"
+
+  Scenario: Saving a created message
+    Given I am logged in
+    And there is a recipient I added in the system called "Mikel Lindsaar"
+    And there is a message called "My Email" in the system with "Mikel Lindsaar" as a recipient
+    When I go to the edit page for "Message" with a "title" of "My Email"
     And I press "Next"
     Then I should see "Schedule Mailout"
 
   Scenario: Removing a recipient from a created message
+    Given I am logged in
+    And there is a recipient I added in the system called "Mikel Lindsaar"
+    And there is a message called "My Email" in the system with "Mikel Lindsaar" as a recipient
+    When I go to the edit page for "Message" with a "title" of "My Email"
+    And I follow "Remove"
+    Then I should see "Select Recipients"
+    And the message called "My email" should have no recipients
 
   Scenario: Removing a group from a created message
-  
-  
-  
-  
-  
+    Given I am logged in
+    And there is a group in the system called "Public"
+    And there is a message called "My Email" in the system with "Public" as a group
+    When I go to the edit page for "Message" with a "title" of "My Email"
+    And I follow "Remove"
+    Then I should see "Select Recipients"
+    And the message called "My email" should have no groups
+    

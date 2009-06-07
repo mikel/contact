@@ -84,8 +84,9 @@ module NavigationHelpers
       klass = $1
       attribute = $2
       value = $3
-      obj = klass.constantize.find(:first, :conditions => {attribute => value})
-      instance_eval("edit_#{klass.downcase}_path(#{obj.to_param})")
+      obj = klass.capitalize.constantize.find(:first, :conditions => {attribute => value})
+      raise ActiveRecord::RecordNotFound unless obj
+      instance_eval("edit_#{klass.downcase}_path(obj)")
       
     
     else

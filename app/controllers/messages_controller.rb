@@ -10,9 +10,14 @@ class MessagesController < ApplicationController
     render :action => :edit
   end
   
+  def edit
+    @message = Message.find(params[:id])
+  end
+  
   def update
     @message = Message.find(params[:id])
     @message.attributes = params[:message]
+    @message.save
     case @message.next_step
     when "finished"
       

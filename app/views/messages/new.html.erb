@@ -15,6 +15,7 @@
   <%= f.label :source_upload, "From Uploaded Files" %>
   <%= f.radio_button("source", "upload") %>
   </p>
+  <%= f.hidden_field :state, :value => 'new' %>
   
   <%= f.submit "Next" %>
 <% end -%>

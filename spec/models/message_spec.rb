@@ -67,12 +67,14 @@ describe Message do
       @message.id = 10
       Addressee.should_receive(:create!).with(:message_id => @message.id, :group_id => 5)
       @message.add_group_id = 5
+      @message.save
     end
     
     it "should set the state to select_recipients" do
       @message = Message.new
       Addressee.stub!(:create!)
       @message.add_group_id = 5
+      @message.save
       @message.state.should == 'select_recipients'
     end
   end
@@ -119,7 +121,7 @@ describe Message do
       Recipient.stub!(:find).and_return(@recipient)
       Addressee.stub!(:create!)
       @message.add_recipient = 'mikel@me.com'
-      @message.state.should == 'select_recipients'
+      @message.next_step.should == 'select_recipients'
     end
     
     it "should not try adding an addressee if no recipient was found" do
