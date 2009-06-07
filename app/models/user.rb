@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
 
   validate_on_update :check_last_admin?
   validates_associated :organization
-  validates_presence_of :organization_id
+  validates_presence_of :organization
   
   def check_last_admin?
     if @tried_to_remove_admin && last_admin?

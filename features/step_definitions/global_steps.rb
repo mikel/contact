@@ -31,3 +31,9 @@ end
 Given /^there is a file called "([^\"]*)"$/ do |filename|
   make_file(filename).should be_true
 end
+
+Then /^the "([^\"]*)" with "([^\"]*)" of "([^\"]*)" should have a "([^\"]*)" with "([^\"]*)" of "([^\"]*)"$/ do |klass_1, attribute_1, value_1, klass_2, attribute_2, value_2|
+  parent = klass_1.capitalize.constantize.find(:first, :conditions => {attribute_1 => value_1})
+  child = klass_2.capitalize.constantize.find(:first, :conditions => {attribute_2 => value_2})
+  parent.send(klass_2.pluralize).should include(child)
+end

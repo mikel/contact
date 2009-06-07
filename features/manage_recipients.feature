@@ -60,7 +60,7 @@ Feature: Manage Recipients
     And I fill in "Given Name" with "Billy"
     And I fill in "Family Name" with "Joel"
     And I press "Update"
-    Then I should be on the recipients page
+    Then I should be on the edit page for "Recipient" with a "given_name" of "Mikel"
     And I should see "Billy Joel"
 
   Scenario: Black Listing a recipient
@@ -83,3 +83,29 @@ Feature: Manage Recipients
     Then I should be on the recipients page
     And I should see "Recipient successfully deleted"
     And there should be 0 recipients in the system
+
+  Scenario: Adding a recipient to a group
+    Given I am logged in
+    And there is a group in the system called "Public"
+    And there is a recipient I added in the system called "Mikel Lindsaar"
+    When I go to the edit page for "Recipient" with a "given_name" of "Mikel"
+    And I select "Public" from "Add Group"
+    And I press "Update"
+    Then I should be on the edit page for "Recipient" with a "given_name" of "Mikel"
+    And I should see "Public"
+    And I should see "Remove"
+  
+  Scenario: Removing a recipient from a group
+    Given I am logged in
+    And there is a group in the system called "Public"
+    And there is a recipient I added in the system called "Mikel Lindsaar"
+    When I go to the edit page for "Recipient" with a "given_name" of "Mikel"
+    And I select "Public" from "Add Group"
+    And I press "Update"
+    And I follow "Remove"
+    Then I should be on the edit page for "Recipient" with a "given_name" of "Mikel"
+    And I should not see "Remove"
+    And I should see "Public"
+  
+  
+  

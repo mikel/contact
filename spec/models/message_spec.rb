@@ -34,6 +34,116 @@ describe Message do
       @message.attachments << @attachment
       @message.attachments.should include(@attachment)
     end
+    
+    it "should have many recipients through addressees" do
+      @message = Message.new
+      @recipient = Recipient.new
+      @message.recipients << @recipient
+      @message.recipients.should include(@recipient)
+    end
+    
+    it "should have many groups through addressees" do
+      @message = Message.new
+      @group = Group.new
+      @message.groups << @group
+      @message.groups.should include(@group)
+    end
+    
+  end
+  
+  describe "helper for adding a group individually" do
+    it "should have the virtual attribute :add_group_id" do
+      @message = Message.new
+      @message.should respond_to(:add_group_id)
+    end
+
+    it "should have the virtual attribute :add_group_id=" do
+      @message = Message.new
+      @message.should respond_to(:add_group_id=)
+    end
+    
+    it "should make an addressee off the group id" do
+      @message = Message.new
+      @message.id = 10
+      Addressee.should_receive(:create!).with(:message_id => @message.id, :group_id => 5)
+      @message.add_group_id = 5
+    end
+    
+    it "should set the state to select_recipients" do
+      @message = Message.new
+      Addressee.stub!(:create!)
+      @message.add_group_id = 5
+      @message.state.should == 'select_recipients'
+    end
+  end
+
+  describe "helper for adding a recipient individually" do
+    it "should have the virtual attribute :add_recipient" do
+      @message = Message.new
+      @message.should respond_to(:add_recipient)
+    end
+
+    it "should have the virtual attribute :add_recipient=" do
+      @message = Message.new
+      @message.should respond_to(:add_recipient=)
+    end
+    
+    it "should find the recipient of email address if given an email address" do
+      @message = Message.new
+      @message.id = 10
+      Recipient.should_receive(:find).with(:first, :conditions => {:email => 'mikel@me.com'})
+      Addressee.stub!(:create!)
+      @message.add_recipient = 'mikel@me.com'
+    end
+    
+    it "should find the recipient off given and family name if given a given and family name" do
+      @message = Message.new
+      @message.id = 10
+      Recipient.should_receive(:find).with(:first, :conditions => {:given_name => 'Mikel', :family_name => "Lindsaar"})
+      Addressee.stub!(:create!)
+      @message.add_recipient = 'Mikel Lindsaar'
+    end
+
+    it "should create the subscription with the found recipient id" do
+      @message = Message.new
+      @message.id = 10
+      @recipient = mock_model(Recipient)
+      Recipient.stub!(:find).and_return(@recipient)
+      Addressee.should_receive(:create!).with(:message_id => @message.id, :recipient_id => @recipient.id)
+      @message.add_recipient = 'Mikel Lindsaar'
+    end
+    
+    it "should set the state to select_recipients" do
+      @message = Message.new
+      @recipient = mock_model(Recipient)
+      Recipient.stub!(:find).and_return(@recipient)
+      Addressee.stub!(:create!)
+      @message.add_recipient = 'mikel@me.com'
+      @message.state.should == 'select_recipients'
+    end
+    
+    it "should not try adding an addressee if no recipient was found" do
+      @message = Message.new
+      @message.id = 10
+      Recipient.stub!(:find).and_return(nil)
+      Addressee.should_not_receive(:create!)
+      @message.add_recipient = 'Mikel Lindsaar'
+    end
+    
+    it "should add an error to base if no recipient was found" do
+      @message = Message.new
+      Recipient.stub!(:find).and_return(nil)
+      @message.add_recipient = 'Mikel Lindsaar'
+      @message.errors.full_messages.should include("No recipient found with 'Mikel Lindsaar'")
+    end
+    
+    it "should say 'Please select at least one recipient' if there are no recipients or groups selected already and nothing is passed in" do
+      @message = Message.new
+      Recipient.stub!(:find).and_return(nil)
+      @message.add_recipient = ''
+      @message.errors.full_messages.should include("Please select at least one recipient")
+    end
+    
   end
 
   describe "file handling for source data" do
@@ -91,7 +201,7 @@ describe Message do
     it "should say it's next step is direct_entry if it's source is edit" do
       @message = Message.new
       @message.source = "edit"
-      @message.next_step.should == 'plain_text'
+      @message.next_step.should == 'edit_content'
     end
 
     it "should say what it's next step is select template if it's source is template" do
@@ -151,6 +261,12 @@ describe Message do
       @message = Message.new
       @message.state = 'file_uploaded'
       @message.next_step.should == 'edit_content'
+    end
+
+    it "should return add_recipients if it's state is content_edited" do
+      @message = Message.new
+      @message.state = 'content_edited'
+      @message.next_step.should == 'select_recipients'
     end
 
   end

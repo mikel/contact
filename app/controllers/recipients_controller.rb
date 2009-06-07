@@ -31,9 +31,9 @@ class RecipientsController < ApplicationController
     @recipient.organization = current_user.organization
     if @recipient.save
       flash[:notice] = "Recipient updated"
-      redirect_to recipients_path
+      redirect_to :action => :edit
     else
-      render :action => :new
+      render :action => :edit
     end
   end
 

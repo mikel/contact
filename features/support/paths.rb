@@ -68,8 +68,25 @@ module NavigationHelpers
     
     when /the new message page/
       new_message_path
+    
+    when /the messages page/
+      new_message_path
       
+    when /the groups page/
+      groups_path
+    
     # Add more page name => path mappings here
+    
+    when /the new group page/
+      new_group_path
+      
+    when /the edit page for "([^\"]*)" with a "([^\"]*)" of "([^\"]*)"/
+      klass = $1
+      attribute = $2
+      value = $3
+      obj = klass.constantize.find(:first, :conditions => {attribute => value})
+      instance_eval("edit_#{klass.downcase}_path(#{obj.to_param})")
+      
     
     else
       raise "Can't find mapping from \"#{page_name}\" to a path.\n" +

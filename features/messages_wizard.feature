@@ -1,7 +1,7 @@
-Feature: Managing Messages
-  In order for our public to receive our message
+Feature: Messages Wizard
+  In order to create a message to send
   As a user
-  I want to be able to send messages
+  I want to be able to create a message using a step by step wizard
 
   Scenario: Going to make a new message
     Given I am logged in
@@ -107,3 +107,67 @@ Feature: Managing Messages
     And I should see "Attached Files"
     And I should see "images/rails.png"
 
+  Scenario: Saving a created message
+    Given I am logged in
+    When I follow "New Message"
+    And I fill in "Title" with "My new email"
+    And I choose "Plain Text Only"
+    And I press "Next"
+    And I fill in "Plain Text" with "This is the email I am sending out"
+    And I press "Next"
+    Then I should see "Select Recipients"
+
+  Scenario: Selecting recipients for a message
+    Given I am logged in
+    And there is a group in the system called "Public"
+    And there is a recipient I added in the system called "Mikel Lindsaar"
+    When I follow "New Message"
+    And I fill in "Title" with "My new email"
+    And I choose "Plain Text Only"
+    And I press "Next"
+    And I fill in "Plain Text" with "This is the email I am sending out"
+    And I press "Next"
+    And I select "Public" from "Add Group"
+    And I fill in "Add Recipient" with "Mikel Lindsaar"
+    And I press "Next"
+    Then I should see "Select Recipients"
+    And the "message" with "title" of "My new email" should have a "group" with "name" of "Public"
+    And the "message" with "title" of "My new email" should have a "recipient" with "given_name" of "Mikel"
+
+  Scenario: Selecting no recipients for a message
+    Given I am logged in
+    And there is a group in the system called "Public"
+    And there is a recipient I added in the system called "Mikel Lindsaar"
+    When I follow "New Message"
+    And I fill in "Title" with "My new email"
+    And I choose "Plain Text Only"
+    And I press "Next"
+    And I fill in "Plain Text" with "This is the email I am sending out"
+    And I press "Next"
+    And I press "Next"
+    Then I should see "Select Recipients"
+    And I should see "Please select at least one recipient"
+
+  Scenario: Saving a created message
+    Given I am logged in
+    And there is a group in the system called "Public"
+    And there is a recipient I added in the system called "Mikel Lindsaar"
+    When I follow "New Message"
+    And I fill in "Title" with "My new email"
+    And I choose "Plain Text Only"
+    And I press "Next"
+    And I fill in "Plain Text" with "This is the email I am sending out"
+    And I press "Next"
+    And I fill in "Add Recipient" with "Mikel Lindsaar"
+    And I press "Next"
+    And I press "Next"
+    Then I should see "Schedule Mailout"
+
+  Scenario: Removing a recipient from a created message
+
+  Scenario: Removing a group from a created message
+  
+  
+  
+  
+  

@@ -1,0 +1,5 @@
+<li>
+  <%= group.name %>,
+  <%= link_to "Remove", recipient_group_path(:id => group.to_param, :recipient_id => @recipient.to_param), :method => 'delete' %>
+  
+</li>

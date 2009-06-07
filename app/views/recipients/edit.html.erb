@@ -2,5 +2,15 @@
 <% form_for @recipient do |f| %>
   <%= f.error_messages %>
   <%= render :partial => "form", :object => f %>
+
+  <h3>Groups:</h3>
+  <ul>
+    <%= render :partial => "group", :collection => @recipient.groups %>
+  </ul>
+
+  <br />
+  <%= f.label :add_group_id, "Add Group" %>
+  <%= f.collection_select :add_group_id, Group.all(:order => 'name'), :id, :name -%>
+
   <%= f.submit "Update" %>
 <% end %>

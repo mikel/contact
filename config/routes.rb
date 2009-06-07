@@ -43,11 +43,19 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :users, 
                 :user_sessions,
                 :email_templates,
-                :organizations,
-                :messages
+                :organizations
+
+  map.resources :messages do |message|
+    message.resources :groups
+    message.resources :recipients
+  end
+                
+  map.resources :groups
   
   map.resources :attachments, { :member => 'thumbnail' }
   
-  map.resources :recipients, { :member => 'black_list', :method => 'delete' }
+  map.resources :recipients, { :member => 'black_list', :method => 'delete' } do |recipient|
+    recipient.resources :groups
+  end
   
 end

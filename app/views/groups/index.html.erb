@@ -1,0 +1,9 @@
+<%- if @groups.empty? -%>
+  No groups defined
+<% else -%>
+  <ul>
+    <%= render :partial => 'group', :collection => @groups %>
+  </ul>
+<%- end -%>
+
+<%= link_to "Make a new group", new_group_path %>

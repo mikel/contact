@@ -16,7 +16,6 @@ class MessagesController < ApplicationController
     case @message.next_step
     when "finished"
       
-      
     else
       render :action => :edit
     end

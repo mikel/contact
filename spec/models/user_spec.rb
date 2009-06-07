@@ -170,6 +170,7 @@ describe User do
     it "should be invalid without an organization" do
       user = Factory(:user)
       user.organization = nil
+      user.organization_id = nil
       user.should_not be_valid
     end
   end
