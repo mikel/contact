@@ -134,6 +134,32 @@ Feature: Messages Wizard
     And the "message" with "title" of "My new email" should have a "group" with "name" of "Public"
     And the "message" with "title" of "My new email" should have a "recipient" with "given_name" of "Mikel"
 
+  Scenario: Selecting a recipient for a message should not show a validation error
+    Given I am logged in
+    And there is a recipient I added in the system called "Mikel Lindsaar"
+    When I follow "New Message"
+    And I fill in "Title" with "My new email"
+    And I choose "Plain Text Only"
+    And I press "Next"
+    And I fill in "Plain Text" with "This is the email I am sending out"
+    And I press "Next"
+    And I fill in "Add Recipient" with "Mikel Lindsaar"
+    And I press "Next"
+    Then I should not see "prohibited this message from being saved"
+
+  Scenario: Selecting a group for a message should not show a validation error
+    Given I am logged in
+    And there is a group in the system called "Public"
+    When I follow "New Message"
+    And I fill in "Title" with "My new email"
+    And I choose "Plain Text Only"
+    And I press "Next"
+    And I fill in "Plain Text" with "This is the email I am sending out"
+    And I press "Next"
+    And I select "Public" from "Add Group"
+    And I press "Next"
+    Then I should not see "prohibited this message from being saved"
+
   Scenario: Trying to add the same recipient twice
     Given I am logged in
     And there is a group in the system called "Public"
@@ -177,9 +203,15 @@ Feature: Messages Wizard
 
   Scenario: Saving a created message
     Given I am logged in
-    And there is a recipient I added in the system called "Mikel Lindsaar"
-    And there is a message called "My Email" in the system with "Mikel Lindsaar" as a recipient
-    When I go to the edit page for "Message" with a "title" of "My Email"
+    And there is a group in the system called "Public"
+    When I follow "New Message"
+    And I fill in "Title" with "My new email"
+    And I choose "Plain Text Only"
+    And I press "Next"
+    And I fill in "Plain Text" with "This is the email I am sending out"
+    And I press "Next"
+    And I select "Public" from "Add Group"
+    And I press "Next"
     And I press "Next"
     Then I should see "Schedule Mailout"
 

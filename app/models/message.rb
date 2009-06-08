@@ -4,11 +4,16 @@ class Message < ActiveRecord::Base
 
   validates_presence_of :title
   
-  validate :must_have_recipients, :if => Proc.new { |message| message.state == 'select_recipients' }  
+  validate :must_have_recipients, :if => Proc.new { |m| m.state == 'recipients_selected' }  
   
   def must_have_recipients
-    if no_recipients
+    true == true
+    case
+    when no_recipients && @recipient_selected.blank? && @group_selected.blank?
       errors.add_to_base 'Please select at least one recipient' 
+      false
+    when no_recipients
+      errors.add_to_base "No recipient found with '#{@recipient_selected}'"
       false
     else
       true
@@ -24,11 +29,12 @@ class Message < ActiveRecord::Base
   belongs_to :email_template
   belongs_to :user
   
-  def before_save
-    update_template if changes.include?('email_template') || changes.include?('email_template_id')
+  def before_validation
     self.multipart = true if state == 'new' && source == 'upload'
-    do_add_recipients if @recipient_selected
-    do_add_group if @group_selected
+  end
+
+  def after_save
+    update_template if changes.include?('email_template') || changes.include?('email_template_id')
   end
 
   def update_template
@@ -74,48 +80,48 @@ class Message < ActiveRecord::Base
   end
 
   def add_group_id
-    nil
+    @group_selected
   end
   
   def add_group_id=(group_selected)
     @group_selected = group_selected
+    do_add_group unless @group_selected.blank?
   end
 
   def add_recipient
-    nil
+    @recipient_selected
   end
   
   def add_recipient=(recipient_selected)
     @recipient_selected = recipient_selected
+    do_add_recipients
   end
 
   private
 
-
   def do_add_group
-    unless Addressee.find(:first, :conditions => {:message_id => self.id, :group_id => @group_selected})
-      Addressee.create!(:message_id => self.id, :group_id => @group_selected)
-    end
+    @group = Group.find(@group_selected)
+    self.groups << @group unless self.groups.include?(@group)
   end
 
   def do_add_recipients
+
     case @recipient_selected
     when /@/ # Probably an email address
       @recipient = Recipient.find(:first, :conditions => {:email => @recipient_selected})
-      self.errors.add_to_base("No recipient found with '#{recipient_detail}'") unless @recipient
     when /\s/
       given, family = @recipient_selected.to_s.split(" ", 2)
       @recipient = Recipient.find(:first, :conditions => {:given_name => given, :family_name => family})
-      self.errors.add_to_base("No recipient found with '#{recipient_detail}'") unless @recipient
     end
 
-    if @recipient && !recipients.include?(@recipient)
-      Addressee.create!(:message_id => self.id, :recipient_id => @recipient.id)
+    unless @recipient.nil?
+      self.recipients << @recipient unless self.recipients.include?(@recipient)
     end
+
   end
 
   def no_recipients
-    @no_recipients ||= (recipients.empty? && groups.empty?)
+    (recipients.length == 0) && (groups.length == 0)
   end
   
   def strip(html)

@@ -60,7 +60,7 @@ Feature: Manage Recipients
     And I fill in "Given Name" with "Billy"
     And I fill in "Family Name" with "Joel"
     And I press "Update"
-    Then I should be on the edit page for "Recipient" with a "given_name" of "Mikel"
+    Then I should be on the edit page for "Recipient" with a "given_name" of "Billy"
     And I should see "Billy Joel"
 
   Scenario: Black Listing a recipient

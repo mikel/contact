@@ -10,6 +10,31 @@ describe Message do
       @message.title = nil
       @message.should_not be_valid
     end
+    
+    it "should be invalid without a recipient if the state is at 'recipients_selected'" do
+      @message = Message.new
+      @message.title = "Hello"
+      @message.state = 'recipients_selected'
+      @message.should_not be_valid
+    end
+
+    it "should be valid if the state is at 'recipients_selected' and it has a recipient" do
+      @message = Message.new
+      @message.title = "Hello"
+      @message.state = 'recipients_selected'
+      @recipient = Factory(:recipient, :email => "mikel@me.com")
+      @message.add_recipient = @recipient.email
+      @message.should be_valid
+    end
+
+    it "should be valid if the state is at 'recipients_selected' and it has a group" do
+      @message = Message.new
+      @message.title = "Hello"
+      @message.state = 'recipients_selected'
+      @group = Factory(:group)
+      @message.add_group_id = @group
+      @message.should be_valid
+    end
   end
 
   describe "associations" do
@@ -65,17 +90,11 @@ describe Message do
     it "should make an addressee off the group id" do
       @message = Message.new
       @message.id = 10
-      Addressee.should_receive(:create!).with(:message_id => @message.id, :group_id => 5)
+      @group = mock_model(Group, :valid? => true)
+      Group.stub!(:find).and_return(@group)
       @message.add_group_id = 5
-      @message.save
-    end
-    
-    it "should set the state to select_recipients" do
-      @message = Message.new
-      Addressee.stub!(:create!)
-      @message.add_group_id = 5
-      @message.save
-      @message.state.should == 'select_recipients'
+      @message.groups.should include(@group)
+      
     end
   end
 
@@ -102,7 +121,6 @@ describe Message do
       @message = Message.new
       @message.id = 10
       Recipient.should_receive(:find).with(:first, :conditions => {:given_name => 'Mikel', :family_name => "Lindsaar"})
-      Addressee.stub!(:create!)
       @message.add_recipient = 'Mikel Lindsaar'
     end
 
@@ -111,31 +129,35 @@ describe Message do
       @message.id = 10
       @recipient = mock_model(Recipient)
       Recipient.stub!(:find).and_return(@recipient)
-      Addressee.should_receive(:create!).with(:message_id => @message.id, :recipient_id => @recipient.id)
       @message.add_recipient = 'Mikel Lindsaar'
-    end
-    
-    it "should set the state to select_recipients" do
-      @message = Message.new
-      @recipient = mock_model(Recipient)
-      Recipient.stub!(:find).and_return(@recipient)
-      Addressee.stub!(:create!)
-      @message.add_recipient = 'mikel@me.com'
-      @message.next_step.should == 'select_recipients'
+      @message.recipients.should include(@recipient)
     end
     
     it "should not try adding an addressee if no recipient was found" do
       @message = Message.new
       @message.id = 10
       Recipient.stub!(:find).and_return(nil)
-      Addressee.should_not_receive(:create!)
-      @message.add_recipient = 'Mikel Lindsaar'
+      doing { @message.add_recipient = 'Mikel Lindsaar' }.should_not raise_error
+    end
+    
+    it "should not try to add a recipient if none was given" do
+      @message = Message.new
+      @message.id = 10
+      doing { @message.add_recipient = '' }.should_not raise_error
+    end
+    
+    it "should not try to add a group if none was given" do
+      @message = Message.new
+      @message.id = 10
+      doing { @message.add_group_id = '' }.should_not raise_error
     end
     
     it "should add an error to base if no recipient was found" do
       @message = Message.new
       Recipient.stub!(:find).and_return(nil)
       @message.add_recipient = 'Mikel Lindsaar'
+      @message.state = 'recipients_selected'
+      @message.valid?
       @message.errors.full_messages.should include("No recipient found with 'Mikel Lindsaar'")
     end
     
@@ -143,6 +165,8 @@ describe Message do
       @message = Message.new
       Recipient.stub!(:find).and_return(nil)
       @message.add_recipient = ''
+      @message.state = 'recipients_selected'
+      @message.valid?
       @message.errors.full_messages.should include("Please select at least one recipient")
     end
     
@@ -202,18 +226,21 @@ describe Message do
     
     it "should say it's next step is direct_entry if it's source is edit" do
       @message = Message.new
+      @message.state = 'new'
       @message.source = "edit"
       @message.next_step.should == 'edit_content'
     end
 
     it "should say what it's next step is select template if it's source is template" do
       @message = Message.new
+      @message.state = 'new'
       @message.source = "template"
       @message.next_step.should == 'select_template'
     end
 
     it "should say what it's next step is select file if it's source is upload" do
       @message = Message.new
+      @message.state = 'new'
       @message.source = "upload"
       @message.next_step.should == 'select_files'
     end
@@ -229,9 +256,10 @@ describe Message do
     it "should set it's html_part and plain_part to that of the email template if the state is 'template_selected'" do
       @message = Message.new
       @email_template = Factory(:email_template)
+      @message.title = "Test Email"
       @message.email_template_id = @email_template.id
       @message.state = 'template_selected'
-      @message.next_step.should == 'edit_content'
+      @message.save!
       @message.html_part.should == @email_template.html_part
       @message.plain_part.should == @email_template.plain_part
     end
@@ -248,7 +276,6 @@ describe Message do
       @message = Message.new(:title => "New Email", :email_template => @email_template)
       @message.state = 'template_selected'
       @message.save
-      @message.next_step
       @message.attachments.count.should == 1
       @message.attachments.first.filename.should == 'rails.png'
     end
