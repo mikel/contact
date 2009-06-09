@@ -222,7 +222,7 @@ Feature: Messages Wizard
     When I go to the edit page for "Message" with a "title" of "My Email"
     And I follow "Remove"
     Then I should see "Select Recipients"
-    And the message called "My email" should have no recipients
+    And the message called "My Email" should have no recipients
 
   Scenario: Removing a group from a created message
     Given I am logged in
@@ -231,5 +231,5 @@ Feature: Messages Wizard
     When I go to the edit page for "Message" with a "title" of "My Email"
     And I follow "Remove"
     Then I should see "Select Recipients"
-    And the message called "My email" should have no groups
+    And the message called "My Email" should have no groups
     

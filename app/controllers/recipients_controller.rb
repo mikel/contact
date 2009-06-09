@@ -43,12 +43,18 @@ class RecipientsController < ApplicationController
     flash[:notice] = "Recipient successfully black listed"
     redirect_to recipients_path
   end
-
+  
   def destroy
     @recipient = current_user.recipients.find(params[:id])
-    @recipient.delete
-    flash[:notice] = "Recipient successfully deleted"
-    redirect_to recipients_path
+    if params[:message_id]
+      @message = Message.find(params[:message_id])
+      @message.recipients.delete(@recipient)
+      redirect_to edit_message_path(@message)
+    else
+      @recipient.delete
+      flash[:notice] = "Recipient successfully deleted"
+      redirect_to recipients_path
+    end
   end
   
 end

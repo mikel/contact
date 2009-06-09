@@ -74,6 +74,12 @@ describe Message do
       @message.groups.should include(@group)
     end
     
+    it "should have an organization via user" do
+      @org = Factory(:organization)
+      @user = Factory(:user, :organization => @org)
+      @message = Message.new(:user => @user)
+      @message.organization.should == @org
+    end
   end
   
   describe "helper for adding a group individually" do

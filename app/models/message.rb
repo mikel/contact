@@ -37,6 +37,10 @@ class Message < ActiveRecord::Base
     update_template if changes.include?('email_template') || changes.include?('email_template_id')
   end
 
+  def organization
+    user.organization
+  end
+
   def update_template
     self.attributes = email_template.copy_attributes
     email_template.attachments.each do |attachment|

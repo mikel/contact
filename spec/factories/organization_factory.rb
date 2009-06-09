@@ -1,3 +1,3 @@
 Factory.define :organization do |o|
-  o.name 'organization'
+  o.name 'Sydney'
 end
