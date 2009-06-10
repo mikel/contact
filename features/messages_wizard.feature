@@ -232,4 +232,34 @@ Feature: Messages Wizard
     And I follow "Remove"
     Then I should see "Select Recipients"
     And the message called "My Email" should have no groups
-    
+  
+  Scenario: Scheduling a message
+    Given I am logged in
+    And there is a group in the system called "Public"
+    And there is a message called "My Email" in the system with "Public" as a group
+    When I go to the edit page for "Message" with a "title" of "My Email"
+    And I press "Next"
+    Then I should see "Schedule Mailout"
+  
+  Scenario: Scheduling a message to be sent out now
+    Given I am logged in
+    And there is a group in the system called "Public"
+    And there is a message called "My Email" in the system with "Public" as a group
+    When I go to the edit page for "Message" with a "title" of "My Email"
+    And I press "Next"
+    And I choose "Send out immediately"
+    And I press "Next"
+    Then I should see "Confirm Mailout"
+    And the message called "My Email" should have a scheduled time of "now"
+  
+  Scenario: Scheduling a message to be sent out in the future
+    Given I am logged in
+    And there is a group in the system called "Public"
+    And there is a message called "My Email" in the system with "Public" as a group
+    When I go to the edit page for "Message" with a "title" of "My Email"
+    And I press "Next"
+    And I choose "Send out at"
+    And I select "December 25, 2010 20:12" as the date and time
+    And I press "Next"
+    Then I should see "Confirm Mailout"
+    And the message called "My Email" should have a scheduled time of "December 25, 2010 20:12"

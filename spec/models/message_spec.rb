@@ -104,6 +104,22 @@ describe Message do
     end
   end
 
+  describe "helper for setting the schedule" do
+    it "should have a virtual attribute called 'schedule'" do
+      @message = Message.new
+      @message.should respond_to(:schedule)
+      @message.should respond_to(:schedule=)
+    end
+    
+    it "should rest the date_scheduled to now if schedule is set to 'now'" do
+      @time = Time.now
+      Time.stub!(:now).and_return(@time)
+      @message = Message.new
+      @message.schedule = 'now'
+      @message.date_scheduled.should == @time
+    end
+  end
+
   describe "helper for adding a recipient individually" do
     it "should have the virtual attribute :add_recipient" do
       @message = Message.new
@@ -284,6 +300,12 @@ describe Message do
       @message.save
       @message.attachments.count.should == 1
       @message.attachments.first.filename.should == 'rails.png'
+    end
+
+    it "should return confirm if the state is set to date_scheduled" do
+      @message = Message.new
+      @message.state = 'date_scheduled'
+      @message.next_step.should == 'confirm'
     end
 
     it "should set return edit_content if the state is set to 'file_uploaded'" do

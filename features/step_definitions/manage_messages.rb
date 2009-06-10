@@ -25,3 +25,12 @@ end
 Then /^the message called "([^\"]*)" should have no (.*)$/ do |title, collection|
   Message.find(:first, :conditions => {:title => title}).send(collection).count.should == 0
 end
+
+Then /^the message called "([^\"]*)" should have a scheduled time of "([^\"]*)"$/ do |title, time|
+  @message = Message.find(:first, :conditions => {:title => title})
+  if time == 'now'
+    @message.date_scheduled.should < Time.now
+  else
+    @message.date_scheduled.should == DateTime.parse(time)
+  end
+end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090606215023) do
+ActiveRecord::Schema.define(:version => 20090610221548) do
 
   create_table "addressees", :force => true do |t|
     t.integer  "message_id"
@@ -59,6 +59,8 @@ ActiveRecord::Schema.define(:version => 20090606215023) do
     t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "date_scheduled"
+    t.datetime "date_sent"
   end
 
   create_table "organizations", :force => true do |t|

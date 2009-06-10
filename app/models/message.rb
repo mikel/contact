@@ -68,9 +68,19 @@ class Message < ActiveRecord::Base
       else
         'select_recipients'
       end
+    when state == 'date_scheduled'
+      'confirm'
     else
       'new'
     end
+  end
+  
+  def schedule
+    nil
+  end
+
+  def schedule=(value)
+    self.date_scheduled = Time.now if value == 'now'
   end
 
   def html_file_data=(data)
