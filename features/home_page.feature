@@ -7,12 +7,12 @@ Feature: Home page
     Given I am logged in
     When I go to the homepage
     Then I should be on the homepage
-    And I should see "Welcome to Mailer"
-    And I should see "Edit Profile"
+    And I should see "Welcome to Contact"
+    And I should see "Profile"
   
   Scenario: going to the home page as an administrator
     Given I am logged in as an admin
     When I go to the homepage
     Then I should be on the homepage
-    And I should see "Welcome to Mailer"
-    And I should see "Edit Users"
+    And I should see "Welcome to Contact"
+    And I should see "Users"

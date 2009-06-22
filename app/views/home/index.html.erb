@@ -1,4 +1,4 @@
-<h1>Welcome to Mailer</h1>
+<h1>Welcome to Contact</h1>
 
 <h2>Email Templates</h2>
 
@@ -12,7 +12,7 @@
   </li>
 
   <li>
-    <%= link_to "New Message", new_message_path %>
+    <%= link_to "Mailouts", messages_path %>
   </li>
 
   <li>
@@ -21,9 +21,9 @@
 
   <li>
     <%- if current_user.admin -%>
-      <%= link_to "Edit Users", users_path %><br />
+      <%= link_to "Users", users_path %><br />
     <%- else -%>
-      <%= link_to "Edit Profile", edit_user_path(current_user) %><br />
+      <%= link_to "Profile", edit_user_path(current_user) %><br />
     <%- end -%>
   </li>
   

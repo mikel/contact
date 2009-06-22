@@ -106,6 +106,3 @@ Feature: Manage Recipients
     Then I should be on the edit page for "Recipient" with a "given_name" of "Mikel"
     And I should not see "Remove"
     And I should see "Public"
-  
-  
-  

@@ -2,8 +2,8 @@
 desc 'Bootstraps the system'
 task :bootstrap => :environment do
   org = Organization.create!(:name => "Default")
-  user = User.new(:password => 'mailer',
-                  :password_confirmation => 'mailer',
+  user = User.new(:password => 'contact',
+                  :password_confirmation => 'contact',
                   :given_name => 'Default',
                   :family_name => 'Admin',
                   :email => 'admin@nowaythisisadomainname.org.au')

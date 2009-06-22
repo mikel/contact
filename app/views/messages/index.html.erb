@@ -1,9 +1,9 @@
 <%- if @messages.empty? -%>
-  No messages created
+  No mailouts created
 <% else -%>
   <ul>
     <%= render :partial => 'message', :collection => @messages %>
   </ul>
 <%- end -%>
 
-<%= link_to "Make a new message", new_message_path %>
+<%= link_to "Make a new mailout", new_message_path %>
