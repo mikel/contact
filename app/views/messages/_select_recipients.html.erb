@@ -1,17 +1,19 @@
 <h2>Select Recipients</h2>
 
 <ul>
-  <%= render :partial => "group", :collection => @message.groups %>
+  <%= render :partial => "group", :collection => message.groups, :locals => {:message => message} %>
 </ul>
 <%= f.label :add_group_id, "Add Group" %>
 <%= f.collection_select :add_group_id, Group.all(:order => 'name'), :id, :name, :include_blank => true -%>
 
 
 <ul>
-  <%= render :partial => "recipient", :collection => @message.recipients %>
+  <%= render :partial => "recipient", :collection => message.recipients, :locals => {:message => message} %>
 </ul>
 <%= f.label :add_recipient, "Add Recipient" %>
 <%= f.text_field :add_recipient -%>
 Enter name or email address
 
 <%= f.hidden_field :state, :value => 'recipients_selected' %>
+
+<%= f.submit "Next" %>

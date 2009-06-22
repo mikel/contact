@@ -13,6 +13,15 @@ When /^there is a message called "([^\"]*)" in the system with "([^\"]*)" as a g
   message.groups << group
 end
 
+When /^there is a message called "([^\"]*)" in the system with "([^\"]*)" as a group that has been scheduled$/ do |title, group|
+  message = Factory(:message, :title => title, :state => 'content_edited', :user => User.first)
+  group = Factory(:group, :name => group, :user => User.find(:first))
+  message.date_scheduled = 1.day.from_now
+  message.state = "date_scheduled"
+  message.save!
+  message.groups << group
+end
+
 When /^there is a message called "([^\"]*)" in the system$/ do |title|
   message = Factory(:message, :title => title, :state => 'content_edited', :user => User.first)
   message.save!
@@ -29,7 +38,8 @@ end
 Then /^the message called "([^\"]*)" should have a scheduled time of "([^\"]*)"$/ do |title, time|
   @message = Message.find(:first, :conditions => {:title => title})
   if time == 'now'
-    @message.date_scheduled.should < Time.now
+    # Don't want to stub Time, so just see if it is within 10 seconds of now
+    (@message.date_scheduled.to_i - Time.now.to_i).abs.should < 10
   else
     @message.date_scheduled.should == DateTime.parse(time)
   end

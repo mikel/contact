@@ -241,25 +241,38 @@ Feature: Messages Wizard
     And I press "Next"
     Then I should see "Schedule Mailout"
   
-  Scenario: Scheduling a message to be sent out now
-    Given I am logged in
-    And there is a group in the system called "Public"
-    And there is a message called "My Email" in the system with "Public" as a group
-    When I go to the edit page for "Message" with a "title" of "My Email"
-    And I press "Next"
-    And I choose "Send out immediately"
-    And I press "Next"
-    Then I should see "Confirm Mailout"
-    And the message called "My Email" should have a scheduled time of "now"
-  
   Scenario: Scheduling a message to be sent out in the future
     Given I am logged in
     And there is a group in the system called "Public"
     And there is a message called "My Email" in the system with "Public" as a group
     When I go to the edit page for "Message" with a "title" of "My Email"
     And I press "Next"
-    And I choose "Send out at"
     And I select "December 25, 2010 20:12" as the date and time
     And I press "Next"
     Then I should see "Confirm Mailout"
     And the message called "My Email" should have a scheduled time of "December 25, 2010 20:12"
+
+  Scenario: Confirming a mailout
+    Given I am logged in
+    And there is a group in the system called "Public"
+    And there is a message called "My Email" in the system with "Public" as a group
+    When I go to the edit page for "Message" with a "title" of "My Email"
+    And I press "Next"
+    And I select "December 25, 2010 20:12" as the date and time
+    And I press "Next"
+    Then I should see "Confirm Mailout"
+    And I should see "Title"
+    And I should see "My Email"
+    And I should see "Date Scheduled"
+    And I should see "2010-12-25 20:12:00 UTC"
+    And I should see "Groups"
+    And I should see "Public"
+    And I should see "Recipients"
+
+  Scenario: Approving a mailout
+    Given I am logged in
+    And there is a group in the system called "Public"
+    And there is a message called "My Email" in the system with "Public" as a group that has been scheduled
+    When I go to the edit page for "Message" with a "title" of "My Email"
+    And I press "Confirm Mailout"
+    Then I should be on the messages page

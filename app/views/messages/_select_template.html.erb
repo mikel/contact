@@ -3,3 +3,5 @@
   <%= f.collection_select :email_template_id, current_user.email_templates.all(:order => 'title'), :id, :title, :include_blank => 'Please select template' %><br />
 </p>
 <%= f.hidden_field :state, :value => 'template_selected' %>
+
+<%= f.submit "Next" %>

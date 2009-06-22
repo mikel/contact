@@ -1,4 +1,4 @@
 <li>
   <%= group.name %>,
-  <%= link_to "Remove", message_group_path(:id => group.to_param, :message_id => @message.to_param), :method => 'delete' %>
+  <%= link_to "Remove", message_group_path(:id => group.to_param, :message_id => message.to_param), :method => 'delete' %>
 </li>

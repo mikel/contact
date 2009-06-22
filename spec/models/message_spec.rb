@@ -35,6 +35,7 @@ describe Message do
       @message.add_group_id = @group
       @message.should be_valid
     end
+    
   end
 
   describe "associations" do
@@ -101,22 +102,6 @@ describe Message do
       @message.add_group_id = 5
       @message.groups.should include(@group)
       
-    end
-  end
-
-  describe "helper for setting the schedule" do
-    it "should have a virtual attribute called 'schedule'" do
-      @message = Message.new
-      @message.should respond_to(:schedule)
-      @message.should respond_to(:schedule=)
-    end
-    
-    it "should rest the date_scheduled to now if schedule is set to 'now'" do
-      @time = Time.now
-      Time.stub!(:now).and_return(@time)
-      @message = Message.new
-      @message.schedule = 'now'
-      @message.date_scheduled.should == @time
     end
   end
 
@@ -324,6 +309,12 @@ describe Message do
       @message = Message.new
       @message.state = 'content_edited'
       @message.next_step.should == 'select_recipients'
+    end
+
+    it "should return 'ready_to_send' if it's state is 'confirmed' " do
+      @message = Message.new
+      @message.state = 'confirmed'
+      @message.next_step.should == 'ready_to_send'
     end
 
   end

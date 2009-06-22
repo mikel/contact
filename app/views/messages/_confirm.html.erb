@@ -1,1 +1,24 @@
 <h2>Confirm Mailout</h2>
+<p>
+  Title: 
+  <%= message.title %>
+</p>
+<p>
+  Date Scheduled: 
+  <%= message.date_scheduled %>
+</p>
+<p>
+  Groups: 
+  <ul>
+    <%= render :partial => "group", :collection => message.groups, :locals => {:message => message} %>
+  </ul>
+</p>
+<p>
+  Recipients: 
+  <ul>
+    <%= render :partial => "recipient", :collection => message.recipients, :locals => {:message => message} %>
+  </ul>
+</p>
+<%= f.hidden_field :state, :value => 'confirmed' %>
+
+<%= f.submit "Confirm Mailout" %>

@@ -1,0 +1,9 @@
+<%- if @messages.empty? -%>
+  No messages created
+<% else -%>
+  <ul>
+    <%= render :partial => 'message', :collection => @messages %>
+  </ul>
+<%- end -%>
+
+<%= link_to "Make a new message", new_message_path %>

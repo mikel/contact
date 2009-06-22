@@ -1,10 +1,7 @@
 <h2>Schedule Mailout</h2>
 
-<%= f.label :schedule_now, "Send out immediately" %>
-<%= f.radio_button("schedule", "now") %>
+<%= f.datetime_select :date_scheduled, :default => Time.now %>
 
-<%= f.label :schedule_at, "Send out at" %>
-<%= f.radio_button("schedule", "at") %>
-
-<%= f.datetime_select :date_scheduled %>
 <%= f.hidden_field :state, :value => 'date_scheduled' %>
+
+<%= f.submit "Next" %>

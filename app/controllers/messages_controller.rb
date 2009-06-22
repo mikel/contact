@@ -1,4 +1,8 @@
 class MessagesController < ApplicationController
+
+  def index
+    @messages = Message.find(:all)
+  end
   
   def new
     @message = Message.new
@@ -19,8 +23,8 @@ class MessagesController < ApplicationController
     @message.attributes = params[:message]
     @message.save
     case @message.next_step
-    when "finished"
-      
+    when "ready_to_send"
+      redirect_to messages_path
     else
       render :action => :edit
     end

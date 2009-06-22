@@ -70,7 +70,7 @@ module NavigationHelpers
       new_message_path
     
     when /the messages page/
-      new_message_path
+      messages_path
       
     when /the groups page/
       groups_path
