@@ -10,8 +10,11 @@ class MessagesController < ApplicationController
 
   def create
     @message = Message.new(params[:message])
-    @message.save
-    render :action => :edit
+    if @message.next!
+      render :action => :edit
+    else
+      render :action => :new
+    end
   end
   
   def edit
@@ -21,9 +24,9 @@ class MessagesController < ApplicationController
   def update
     @message = Message.find(params[:id])
     @message.attributes = params[:message]
-    @message.save
-    case @message.next_step
-    when "ready_to_send"
+    @message.next!
+    case @message.state
+    when "confirmed"
       redirect_to messages_path
     else
       render :action => :edit

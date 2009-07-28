@@ -1,22 +1,71 @@
 class Message < ActiveRecord::Base
-
+  
   require 'hpricot'
-
+  
+  # Use state machine for state transitions
+  include AASM
+  aasm_column :aasm_state
+  aasm_initial_state :new
+  
+  aasm_state :new
+  aasm_state :select_html
+  aasm_state :select_template
+  aasm_state :edit_content
+  aasm_state :select_recipients
+  aasm_state :schedule_mailout
+  aasm_state :confirm_mailout
+  aasm_state :confirmed
+  
+  aasm_event :next do
+    transitions :to => :edit_content,      :from => [:new], 
+                :guard => Proc.new { |m| m.source == 'plain' }
+    transitions :to => :select_html,       :from => [:new],
+                :guard => Proc.new { |m| m.source == 'html' }
+    transitions :to => :select_template,   :from => [:new], 
+                :guard => Proc.new { |m| m.source == 'template' }
+    transitions :to => :edit_content,      :from => [:select_html],
+                :on_transition => Proc.new { |m| m.multipart = true }
+    transitions :to => :edit_content,      :from => [:select_template],
+                :on_transition => Proc.new { |m| m.update_template }
+    transitions :to => :select_recipients, :from => [:edit_content]
+    transitions :to => :schedule_mailout,  :from => [:select_recipients],
+                :guard => Proc.new { |m| m.must_have_recipients }
+    transitions :to => :confirm_mailout,   :from => [:schedule_mailout]
+    transitions :to => :confirmed,         :from => [:confirm_mailout]
+  end
+  
+  aasm_event :previous do
+    transitions :to => :confirm_mailout,   :from => [:confirmed]
+    transitions :to => :schedule_mailout,  :from => [:confirm_mailout]
+    transitions :to => :select_recipients, :from => [:schedule_mailout]
+    transitions :to => :edit_content,      :from => [:select_recipients]
+    transitions :to => :new,               :from => [:select_html, :select_template]
+    transitions :to => :new,               :from => [:edit_content],
+                :guard => Proc.new { |m| m.source == 'plain' }
+    transitions :to => :select_html,       :from => [:edit_content],
+                :guard => Proc.new { |m| m.source == 'html' }
+    transitions :to => :select_template,   :from => [:edit_content],
+                :guard => Proc.new { |m| m.source == 'template' }
+  end
+  
   validates_presence_of :title
   
-  validate :must_have_recipients, :if => Proc.new { |m| m.state == 'recipients_selected' }  
-  
   def must_have_recipients
-    true == true
     case
+    # When no recipients and we are not trying to add anyone
     when no_recipients && @recipient_selected.blank? && @group_selected.blank?
       errors.add_to_base 'Please select at least one recipient' 
       false
+    # When no recipients even though we tried to add someone
     when no_recipients
       errors.add_to_base "No recipient found with '#{@recipient_selected}'"
       false
-    else
+    # We have recipients and are not trying to add anyone else
+    when have_recipients && @recipient_selected.blank? && @group_selected.blank?
       true
+    else
+      self.save
+      false
     end
   end
   
@@ -29,12 +78,8 @@ class Message < ActiveRecord::Base
   belongs_to :email_template
   belongs_to :user
   
-  def before_validation
-    self.multipart = true if state == 'new' && source == 'upload'
-  end
-
-  def after_save
-    update_template if changes.include?('email_template') || changes.include?('email_template_id')
+  def state
+    aasm_state
   end
 
   def organization
@@ -42,38 +87,12 @@ class Message < ActiveRecord::Base
   end
 
   def update_template
-    self.attributes = email_template.copy_attributes
-    email_template.attachments.each do |attachment|
-      self.attachments.create!(attachment.attributes)
-    end
-  end
-
-  def next_step
-    case
-    when state == 'new' && source == 'edit'
-      'edit_content'
-    when state == 'new' && source == 'template'
-      'select_template'
-    when state == 'new' && source == 'upload'
-      'select_files'
-    when state == 'content_edited'
-      'select_recipients'
-    when state == 'file_uploaded'
-      'edit_content'
-    when state == 'template_selected'
-      'edit_content'
-    when state == 'recipients_selected'
-      if @recipient_selected.blank? && @group_selected.blank? && must_have_recipients
-        'schedule_mailout'
-      else
-        'select_recipients'
+    if changes.include?('email_template') || changes.include?('email_template_id')
+      self.attributes = email_template.copy_attributes
+      self.save
+      email_template.attachments.each do |attachment|
+        self.attachments.create!(attachment.attributes)
       end
-    when state == 'date_scheduled'
-      'confirm'
-    when state == 'confirmed'
-      'ready_to_send'
-    else
-      'new'
     end
   end
 
@@ -126,6 +145,10 @@ class Message < ActiveRecord::Base
       self.recipients << @recipient unless self.recipients.include?(@recipient)
     end
 
+  end
+
+  def have_recipients
+    !no_recipients
   end
 
   def no_recipients

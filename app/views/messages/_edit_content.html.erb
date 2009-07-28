@@ -10,8 +10,6 @@
   <%= f.text_area :plain_part %>
 </p>
 
-<%= f.hidden_field :state, :value => 'content_edited' %>
-
 <%- unless @message.attachments.empty? -%>
 <h2>Attached Files:</h2>
 <%= render :partial => 'attachments/attachment', :collection => @message.attachments %>

@@ -19,6 +19,5 @@
     <%= render :partial => "recipient", :collection => message.recipients, :locals => {:message => message} %>
   </ul>
 </p>
-<%= f.hidden_field :state, :value => 'confirmed' %>
 
 <%= f.submit "Confirm Mailout" %>

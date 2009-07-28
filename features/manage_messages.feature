@@ -8,6 +8,7 @@ Feature: Managing Messages
     When I follow "Mailouts"
     And I follow "Make a new mailout"
     Then I should be on the new message page
+    And I should see "Enter Title and Type of Mailout"
 
   Scenario: Trying to make an email without a title
     Given I am logged in
@@ -17,6 +18,7 @@ Feature: Managing Messages
     And I press "Next"
     Then I should see "Title can't be blank"
     And I should see "Title"
+    And I should see "Enter Title and Type of Mailout"
 
   Scenario: Making a new plain text email message directly
     Given I am logged in
@@ -80,7 +82,7 @@ Feature: Managing Messages
     When I follow "Mailouts"
     And I follow "Make a new mailout"
     And I fill in "Title" with "My email"
-    And I choose "message_source_upload"
+    And I choose "message_source_html"
     And I press "Next"
     Then I should see "HTML File"
     And I should see "Zip File"
@@ -91,7 +93,7 @@ Feature: Managing Messages
     When I follow "Mailouts"
     And I follow "Make a new mailout"
     And I fill in "Title" with "My email"
-    And I choose "message_source_upload"
+    And I choose "message_source_html"
     And I press "Next"
     And I attach the file at "simple_email/index.html" to "message_html_file_data"
     And I press "Next"
@@ -107,7 +109,7 @@ Feature: Managing Messages
     When I follow "Mailouts"
     And I follow "Make a new mailout"
     And I fill in "Title" with "My email"
-    And I choose "message_source_upload"
+    And I choose "message_source_html"
     And I press "Next"
     And I attach the file at "simple_email/index.html" to "message_html_file_data"
     And I attach the file at "simple_email/images.zip" to "message_zip_file_data"

@@ -11,7 +11,7 @@ describe Recipient do
     it "should say it is black listed" do
       recipient = Factory(:recipient)
       recipient.black_list!
-      recipient.black_list.should be_true
+      recipient.should be_black_listed
     end
   end
 

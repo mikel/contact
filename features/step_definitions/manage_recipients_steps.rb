@@ -15,6 +15,6 @@ end
 Then /^"([^\"]*)" should be black listed$/ do |name|
   given, family = name.split
   recipient = Recipient.find_by_given_name_and_family_name(given, family)
-  recipient.black_list.should be_true
+  recipient.should be_black_listed
 end
 

@@ -1,39 +1,22 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Message do
+    
+  def valid_attributes
+    { :title => "New Mailout" }
+  end
+  
+  def new_message(args = {})
+    Message.new(valid_attributes.merge!(args))
+  end
 
   describe "validations" do
+
     it "should be invalid without a title" do
-      @message = Message.new
-      @message.title = "Hello"
+      @message = new_message
       @message.should be_valid
       @message.title = nil
       @message.should_not be_valid
-    end
-    
-    it "should be invalid without a recipient if the state is at 'recipients_selected'" do
-      @message = Message.new
-      @message.title = "Hello"
-      @message.state = 'recipients_selected'
-      @message.should_not be_valid
-    end
-
-    it "should be valid if the state is at 'recipients_selected' and it has a recipient" do
-      @message = Message.new
-      @message.title = "Hello"
-      @message.state = 'recipients_selected'
-      @recipient = Factory(:recipient, :email => "mikel@me.com")
-      @message.add_recipient = @recipient.email
-      @message.should be_valid
-    end
-
-    it "should be valid if the state is at 'recipients_selected' and it has a group" do
-      @message = Message.new
-      @message.title = "Hello"
-      @message.state = 'recipients_selected'
-      @group = Factory(:group)
-      @message.add_group_id = @group
-      @message.should be_valid
     end
     
   end
@@ -160,20 +143,18 @@ describe Message do
     end
     
     it "should add an error to base if no recipient was found" do
-      @message = Message.new
+      @message = new_message(:aasm_state => 'select_recipients')
       Recipient.stub!(:find).and_return(nil)
       @message.add_recipient = 'Mikel Lindsaar'
-      @message.state = 'recipients_selected'
-      @message.valid?
+      @message.next!
       @message.errors.full_messages.should include("No recipient found with 'Mikel Lindsaar'")
     end
     
     it "should say 'Please select at least one recipient' if there are no recipients or groups selected already and nothing is passed in" do
-      @message = Message.new
+      @message = new_message(:aasm_state => 'select_recipients')
       Recipient.stub!(:find).and_return(nil)
       @message.add_recipient = ''
-      @message.state = 'recipients_selected'
-      @message.valid?
+      @message.next!
       @message.errors.full_messages.should include("Please select at least one recipient")
     end
     
@@ -220,53 +201,15 @@ describe Message do
         doing { @message.zip_file_data = file }.should change(Attachment, :count).by(1)
       end
     end
-    
-  end
   
-  describe "step definitions" do
-    
-    it "should say it's next step is new if it's source is nil" do
-      @message = Message.new
-      @message.source = nil
-      @message.next_step.should == 'new'
-    end
-    
-    it "should say it's next step is direct_entry if it's source is edit" do
-      @message = Message.new
-      @message.state = 'new'
-      @message.source = "edit"
-      @message.next_step.should == 'edit_content'
-    end
-
-    it "should say what it's next step is select template if it's source is template" do
-      @message = Message.new
-      @message.state = 'new'
-      @message.source = "template"
-      @message.next_step.should == 'select_template'
-    end
-
-    it "should say what it's next step is select file if it's source is upload" do
-      @message = Message.new
-      @message.state = 'new'
-      @message.source = "upload"
-      @message.next_step.should == 'select_files'
-    end
-
-    it "should set return edit_content if the state is set to 'template_selected'" do
-      @message = Message.new
-      @email_template = Factory(:email_template)
-      @message.email_template_id = @email_template.id
-      @message.state = 'template_selected'
-      @message.next_step.should == 'edit_content'
-    end
-    
-    it "should set it's html_part and plain_part to that of the email template if the state is 'template_selected'" do
+  
+    it "should set it's html_part and plain_part to that of the email template during the next transition if the state is 'select_template'" do
       @message = Message.new
       @email_template = Factory(:email_template)
       @message.title = "Test Email"
       @message.email_template_id = @email_template.id
-      @message.state = 'template_selected'
-      @message.save!
+      @message.aasm_state = 'select_template'
+      @message.next!
       @message.html_part.should == @email_template.html_part
       @message.plain_part.should == @email_template.plain_part
     end
@@ -277,46 +220,168 @@ describe Message do
       attachment = Factory(:attachment,
                            :filename => 'rails.png',
                            :directory => 'image',
-                           :data => data, 
+                           :data => data,
                            :content_type => 'image/png',
                            :message_id => @email_template.id)
       @message = Message.new(:title => "New Email", :email_template => @email_template)
-      @message.state = 'template_selected'
-      @message.save
+      @message.aasm_state = 'select_template'
+      @message.next!
       @message.attachments.count.should == 1
       @message.attachments.first.filename.should == 'rails.png'
     end
-
-    it "should return confirm if the state is set to date_scheduled" do
-      @message = Message.new
-      @message.state = 'date_scheduled'
-      @message.next_step.should == 'confirm'
-    end
-
-    it "should set return edit_content if the state is set to 'file_uploaded'" do
-      @message = Message.new
-      @message.state = 'file_uploaded'
-      @message.next_step.should == 'edit_content'
+    
+  end
+  
+  
+  
+  
+  
+  describe "state transitions using next!" do
+    
+    it "should be initially in the new state" do
+      @message = new_message
+      @message.save
+      @message.state.should == "new"
     end
     
-    it "should set it's html_part and plain_part to that of the index.html and plain.txt files uploaded if the state is 'file_uploaded'" do
-      @message = Message.new
-      @message.state = 'file_uploaded'
-      @message.next_step.should == 'edit_content'
+    it "should not transition from new without a source being defined" do
+      @message = new_message(:aasm_state => "new")
+      @message.next!.should be_false
     end
 
-    it "should return add_recipients if it's state is content_edited" do
-      @message = Message.new
-      @message.state = 'content_edited'
-      @message.next_step.should == 'select_recipients'
+    it "should transition from new to edit_content if source is plain" do
+      @message = new_message(:aasm_state => "new")
+      @message.source = "plain"
+      @message.next!
+      @message.state.should == "edit_content"
     end
 
-    it "should return 'ready_to_send' if it's state is 'confirmed' " do
-      @message = Message.new
-      @message.state = 'confirmed'
-      @message.next_step.should == 'ready_to_send'
+    it "should transition from new to select_html if source is html" do
+      @message = new_message(:aasm_state => "new")
+      @message.source = "html"
+      @message.next!
+      @message.state.should == "select_html"
     end
 
+    it "should transition from new to select_template if source is template" do
+      @message = new_message(:aasm_state => "new")
+      @message.source = "template"
+      @message.next!
+      @message.state.should == "select_template"
+    end
+
+    it "should transition from select_html to edit_content" do
+      @message = new_message(:aasm_state => "select_html")
+      @message.next!
+      @message.state.should == "edit_content"
+    end
+
+    it "should transition from select_template to edit_content" do
+      @message = new_message(:aasm_state => "select_template")
+      @message.next!
+      @message.state.should == "edit_content"
+    end
+
+    it "should transition from edit_content to select_recipients" do
+      @message = new_message(:aasm_state => "edit_content", :source => 'plain')
+      @message.next!
+      @message.state.should == "select_recipients"
+    end
+
+    it "should transition from select_recipients to select_recipients once we add one recipient" do
+      @message = new_message
+      @message.aasm_state = 'select_recipients'
+      @recipient = Factory(:recipient, :email => "mikel@me.com")
+      @message.add_recipient = @recipient.email
+      @message.next!
+      @message.state.should == "select_recipients"
+    end
+
+    it "should transition from select_recipients to schedule_mailout only if we have finished selecting recipients" do
+      @message = new_message
+      @message.aasm_state = 'select_recipients'
+      @recipient = Factory(:recipient, :email => "mikel@me.com")
+      @message.add_recipient = @recipient.email
+      @message.next!
+      @message = Message.find(@message.id)
+      @message.next!
+      @message.state.should == "schedule_mailout"
+    end
+
+    it "should transition from schedule_mailout to confirm_mailout" do
+      @message = new_message(:aasm_state => "schedule_mailout")
+      @message.next!
+      @message.state.should == "confirm_mailout"
+    end
+
+    it "should transition from confirm_mailout to confirmed" do
+      @message = new_message(:aasm_state => "confirm_mailout")
+      @message.next!
+      @message.state.should == "confirmed"
+    end
+
+  end
+
+  
+  describe "state transitions using previous!" do
+
+    it "should transition to confirm_mailout from confirmed" do
+      @message = new_message(:aasm_state => "confirmed")
+      @message.previous!
+      @message.state.should == "confirm_mailout"
+    end
+    
+    it "should transition to schedule_mailout from confirm_mailout" do
+      @message = new_message(:aasm_state => "confirm_mailout")
+      @message.previous!
+      @message.state.should == "schedule_mailout"
+    end
+    
+    it "should transition to select_recipients from schedule_mailout" do
+      @message = new_message(:aasm_state => "schedule_mailout")
+      @message.previous!
+      @message.state.should == "select_recipients"
+    end
+    
+    it "should transition to edit_content from select_recipients" do
+      @message = new_message(:aasm_state => "select_recipients")
+      @message.previous!
+      @message.state.should == "edit_content"
+    end
+    
+    it "should transition to select_html from edit_content if the source is html" do
+      @message = new_message(:aasm_state => "edit_content")
+      @message.source = 'html'
+      @message.previous!
+      @message.state.should == "select_html"
+    end
+    
+    it "should transition to select_template from edit_content if the source is template" do
+      @message = new_message(:aasm_state => "edit_content")
+      @message.source = 'template'
+      @message.previous!
+      @message.state.should == "select_template"
+    end
+    
+    it "should transition to new from edit_content if the source is plain" do
+      @message = new_message(:aasm_state => "edit_content")
+      @message.source = 'plain'
+      @message.previous!
+      @message.state.should == "new"
+    end
+    
+    it "should transition to new from select_html" do
+      @message = new_message(:aasm_state => "select_html")
+      @message.previous!
+      @message.state.should == "new"
+    end
+    
+    it "should transition to new from select_template" do
+      @message = new_message(:aasm_state => "select_template")
+      @message.previous!
+      @message.state.should == "new"
+    end
+    
   end
 
 end

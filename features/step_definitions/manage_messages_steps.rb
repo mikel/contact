@@ -1,5 +1,5 @@
 When /^there is a message called "([^\"]*)" in the system with "([^\"]*)" as a recipient$/ do |title, recipient|
-  message = Factory(:message, :title => title, :state => 'content_edited', :user => User.first)
+  message = Factory(:message, :title => title, :aasm_state => 'select_recipients', :user => User.first)
   given, family = recipient.split(" ", 2)
   recipient = Factory(:recipient, :given_name => given, :family_name => family, :organization => User.first.organization)
   message.save!
@@ -7,23 +7,22 @@ When /^there is a message called "([^\"]*)" in the system with "([^\"]*)" as a r
 end
 
 When /^there is a message called "([^\"]*)" in the system with "([^\"]*)" as a group$/ do |title, group|
-  message = Factory(:message, :title => title, :state => 'content_edited', :user => User.first)
+  message = Factory(:message, :title => title, :aasm_state => 'select_recipients', :user => User.first)
   group = Factory(:group, :name => group, :user => User.find(:first))
   message.save!
   message.groups << group
 end
 
 When /^there is a message called "([^\"]*)" in the system with "([^\"]*)" as a group that has been scheduled$/ do |title, group|
-  message = Factory(:message, :title => title, :state => 'content_edited', :user => User.first)
+  message = Factory(:message, :title => title, :aasm_state => "confirm_mailout", :user => User.first,
+                    :date_scheduled => 1.day.from_now)
   group = Factory(:group, :name => group, :user => User.find(:first))
-  message.date_scheduled = 1.day.from_now
-  message.state = "date_scheduled"
   message.save!
   message.groups << group
 end
 
 When /^there is a message called "([^\"]*)" in the system$/ do |title|
-  message = Factory(:message, :title => title, :state => 'content_edited', :user => User.first)
+  message = Factory(:message, :title => title, :aasm_state => 'select_recipients', :user => User.first)
   message.save!
 end
 

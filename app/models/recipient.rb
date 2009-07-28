@@ -1,5 +1,13 @@
 class Recipient < ActiveRecord::Base
   
+  # Use state machine for state transitions
+  include AASM
+  aasm_column :aasm_state
+  aasm_initial_state :ok
+  
+  aasm_state :ok
+  aasm_state :black_listed
+  
   belongs_to :organization
 
   has_many :subscriptions
@@ -15,12 +23,8 @@ class Recipient < ActiveRecord::Base
     "#{given_name} #{family_name}"
   end
   
-  def black_list!
-    self.update_attribute(:state, 'blacklisted')
-  end
-
-  def black_list
-    @black_list ||= (self.state == 'blacklisted')
+  aasm_event :black_list do
+    transitions :to => :black_listed, :from => [:ok]
   end
   
   def add_group_id=(group_id)
@@ -30,5 +34,9 @@ class Recipient < ActiveRecord::Base
 
   def add_group_id
     nil
+  end
+  
+  def state
+    aasm_state
   end
 end
