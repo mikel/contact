@@ -1,0 +1,23 @@
+<h2>Confirm Mailout</h2>
+<p>
+  Title: 
+  <%= mailout.title %>
+</p>
+<p>
+  Date Scheduled: 
+  <%= mailout.date_scheduled %>
+</p>
+<p>
+  Groups: 
+  <ul>
+    <%= render :partial => "group", :collection => mailout.groups, :locals => {:mailout => mailout, :no_edit => true} %>
+  </ul>
+</p>
+<p>
+  Recipients: 
+  <ul>
+    <%= render :partial => "recipient", :collection => mailout.recipients, :locals => {:mailout => mailout, :no_edit => true} %>
+  </ul>
+</p>
+
+<%= f.submit "Confirm Mailout" %>

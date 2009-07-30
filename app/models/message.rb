@@ -11,10 +11,7 @@ class Message < ActiveRecord::Base
   aasm_state :select_html
   aasm_state :select_template
   aasm_state :edit_content
-  aasm_state :select_recipients
-  aasm_state :schedule_mailout
-  aasm_state :confirm_mailout
-  aasm_state :confirmed
+  aasm_state :complete
   
   aasm_event :next do
     transitions :to => :edit_content,      :from => [:new], 
@@ -27,59 +24,55 @@ class Message < ActiveRecord::Base
                 :on_transition => Proc.new { |m| m.multipart = true }
     transitions :to => :edit_content,      :from => [:select_template],
                 :on_transition => Proc.new { |m| m.update_template }
-    transitions :to => :select_recipients, :from => [:edit_content]
-    transitions :to => :schedule_mailout,  :from => [:select_recipients],
-                :guard => Proc.new { |m| m.must_have_recipients }
-    transitions :to => :confirm_mailout,   :from => [:schedule_mailout]
-    transitions :to => :confirmed,         :from => [:confirm_mailout]
+    transitions :to => :complete,          :from => [:edit_content]
   end
   
   aasm_event :previous do
-    transitions :to => :confirm_mailout,   :from => [:confirmed]
-    transitions :to => :schedule_mailout,  :from => [:confirm_mailout]
-    transitions :to => :select_recipients, :from => [:schedule_mailout]
-    transitions :to => :edit_content,      :from => [:select_recipients]
-    transitions :to => :new,               :from => [:select_html, :select_template]
-    transitions :to => :new,               :from => [:edit_content],
+    transitions :to => :edit_content,      :from => [:complete],
                 :guard => Proc.new { |m| m.source == 'plain' }
     transitions :to => :select_html,       :from => [:edit_content],
                 :guard => Proc.new { |m| m.source == 'html' }
     transitions :to => :select_template,   :from => [:edit_content],
                 :guard => Proc.new { |m| m.source == 'template' }
+    transitions :to => :new,               :from => [:select_html, :select_template]
+    transitions :to => :new,               :from => [:edit_content]
   end
   
   validates_presence_of :title
   
-  def must_have_recipients
-    case
-    # When no recipients and we are not trying to add anyone
-    when no_recipients && @recipient_selected.blank? && @group_selected.blank?
-      errors.add_to_base 'Please select at least one recipient' 
-      false
-    # When no recipients even though we tried to add someone
-    when no_recipients
-      errors.add_to_base "No recipient found with '#{@recipient_selected}'"
-      false
-    # We have recipients and are not trying to add anyone else
-    when have_recipients && @recipient_selected.blank? && @group_selected.blank?
-      true
-    else
-      self.save
-      false
-    end
-  end
-  
   has_many :attachments
-
-  has_many :addressees
-  has_many :groups,     :through => :addressees
-  has_many :recipients, :through => :addressees
-
+  has_many :mailouts
+  
   belongs_to :email_template
   belongs_to :user
   
   def state
     aasm_state
+  end
+  
+  def nice_state
+    aasm_state.humanize
+  end
+  
+  def nice_type
+    if multipart
+      "Multipart Email"
+    else
+      "Plain Text Only"
+    end
+  end
+
+  def nice_source
+    case source
+    when 'plain'
+      "Directly Edited"
+    when 'html'
+      "From HTML Files"
+    when 'template'
+      "From Template"
+    else
+      ''
+    end
   end
 
   def organization
@@ -106,54 +99,7 @@ class Message < ActiveRecord::Base
     extract_file_data(data)
   end
 
-  def add_group_id
-    @group_selected
-  end
-  
-  def add_group_id=(group_selected)
-    @group_selected = group_selected
-    do_add_group unless @group_selected.blank?
-  end
-
-  def add_recipient
-    @recipient_selected
-  end
-  
-  def add_recipient=(recipient_selected)
-    @recipient_selected = recipient_selected
-    do_add_recipients
-  end
-
   private
-
-  def do_add_group
-    @group = Group.find(@group_selected)
-    self.groups << @group unless self.groups.include?(@group)
-  end
-
-  def do_add_recipients
-
-    case @recipient_selected
-    when /@/ # Probably an email address
-      @recipient = Recipient.find(:first, :conditions => {:email => @recipient_selected})
-    when /\s/
-      given, family = @recipient_selected.to_s.split(" ", 2)
-      @recipient = Recipient.find(:first, :conditions => {:given_name => given, :family_name => family})
-    end
-
-    unless @recipient.nil?
-      self.recipients << @recipient unless self.recipients.include?(@recipient)
-    end
-
-  end
-
-  def have_recipients
-    !no_recipients
-  end
-
-  def no_recipients
-    (recipients.length == 0) && (groups.length == 0)
-  end
   
   def strip(html)
     Hpricot(html).to_plain_text.gsub(/\s+/, "\s").gsub(/\n\n+/, "\n")

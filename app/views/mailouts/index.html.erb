@@ -1,0 +1,9 @@
+<%- if @mailouts.empty? -%>
+  No mailouts created
+<% else -%>
+  <table>
+    <%= render :partial => 'mailout', :collection => @mailouts %>
+  </table>
+<%- end -%>
+
+<%= link_to "Make a new mailout", new_mailout_path %>

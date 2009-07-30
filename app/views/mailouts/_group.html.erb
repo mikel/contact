@@ -1,0 +1,6 @@
+<li>
+  <%= group.name %>
+  <%- unless no_edit -%>
+    <%= link_to "Remove", mailout_group_path(:id => group.to_param, :mailout_id => mailout.to_param), :method => 'delete' %>
+  <%- end -%>
+</li>

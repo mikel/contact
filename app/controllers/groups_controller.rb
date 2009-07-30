@@ -26,10 +26,10 @@ class GroupsController < ApplicationController
       @recipient = Recipient.find(params[:recipient_id])
       @recipient.groups.delete(@group)
       redirect_to edit_recipient_path(@recipient)
-    elsif params[:message_id]
-      @message = Message.find(params[:message_id])
-      @message.groups.delete(@group)
-      redirect_to edit_message_path(@message)
+    elsif params[:mailout_id]
+      @mailout = Mailout.find(params[:mailout_id])
+      @mailout.groups.delete(@group)
+      redirect_to edit_mailout_path(@mailout)
     else
       @group.destroy
       redirect_to groups_path

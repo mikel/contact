@@ -1,0 +1,10 @@
+<tr>
+  <td><%= link_to mailout.title, mailout %></td>
+  <td><%= mailout.nice_state %></td>
+  <td><%= mailout.date_scheduled %></td>
+  <%- if mailout.state == 'confirmed'  -%>
+    <td>Ready to Send</td>
+  <%- else -%>
+    <td><%= link_to "Continue", edit_mailout_path(mailout) %></td>
+  <%- end -%>
+</tr>

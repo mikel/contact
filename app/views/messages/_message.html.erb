@@ -1,5 +1,9 @@
-<li>
-  <%= message.title %>&nbsp;
-  <%= message.date_scheduled %>&nbsp;
-  <%= message.state %>&nbsp;
-</li>
+<tr>
+  <td><%= link_to message.title, message %></td>
+  <td><%= message.nice_state %></td>
+  <%- if message.state == 'complete'  -%>
+    <td><%= link_to "Send Mailout", new_mailout_path(:message_id => message.id) %></td>
+  <%- else -%>
+    <td><%= link_to "Continue", edit_message_path(message) %></td>
+  <%- end -%>
+</tr>

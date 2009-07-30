@@ -4,9 +4,9 @@ describe Addressee do
   
   it "should belong to a recipient" do
     @addressee = Addressee.new
-    @message = Message.new
-    @addressee.message = @message
-    @addressee.message.should == @message
+    @mailout = Mailout.new
+    @addressee.mailout = @mailout
+    @addressee.mailout.should == @mailout
   end
   
   it "should belong to a recipient" do

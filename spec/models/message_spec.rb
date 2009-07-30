@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe Message do
     
   def valid_attributes
-    { :title => "New Mailout" }
+    { :title => "New Message" }
   end
   
   def new_message(args = {})
@@ -43,121 +43,59 @@ describe Message do
       @message.attachments << @attachment
       @message.attachments.should include(@attachment)
     end
-    
-    it "should have many recipients through addressees" do
+
+    it "should have many mailouts" do
       @message = Message.new
-      @recipient = Recipient.new
-      @message.recipients << @recipient
-      @message.recipients.should include(@recipient)
+      @mailout = Mailout.new
+      @message.mailouts << @mailout
+      @message.mailouts.should include(@mailout)
     end
-    
-    it "should have many groups through addressees" do
-      @message = Message.new
-      @group = Group.new
-      @message.groups << @group
-      @message.groups.should include(@group)
-    end
-    
-    it "should have an organization via user" do
-      @org = Factory(:organization)
-      @user = Factory(:user, :organization => @org)
-      @message = Message.new(:user => @user)
-      @message.organization.should == @org
-    end
+
   end
   
-  describe "helper for adding a group individually" do
-    it "should have the virtual attribute :add_group_id" do
-      @message = Message.new
-      @message.should respond_to(:add_group_id)
+  describe "view helper methods" do
+    it "should change the state into a nice human value for a single word" do
+      @message = new_message
+      @message.aasm_state = 'new'
+      @message.nice_state.should == "New"
     end
 
-    it "should have the virtual attribute :add_group_id=" do
-      @message = Message.new
-      @message.should respond_to(:add_group_id=)
+    it "should change the state into a nice human value for multiple words" do
+      @message = new_message
+      @message.aasm_state = 'edit_content'
+      @message.nice_state.should == "Edit content"
     end
     
-    it "should make an addressee off the group id" do
-      @message = Message.new
-      @message.id = 10
-      @group = mock_model(Group, :valid? => true)
-      Group.stub!(:find).and_return(@group)
-      @message.add_group_id = 5
-      @message.groups.should include(@group)
-      
+    it "should change the type into a nice human value for non multipart" do
+      @message = new_message
+      @message.multipart = false
+      @message.nice_type.should == "Plain Text Only"
     end
-  end
-
-  describe "helper for adding a recipient individually" do
-    it "should have the virtual attribute :add_recipient" do
-      @message = Message.new
-      @message.should respond_to(:add_recipient)
+    
+    it "should change the type into a nice human value for multipart" do
+      @message = new_message
+      @message.multipart = true
+      @message.nice_type.should == "Multipart Email"
     end
 
-    it "should have the virtual attribute :add_recipient=" do
-      @message = Message.new
-      @message.should respond_to(:add_recipient=)
+    it "should change the source into a nice human value for multiple words" do
+      @message = new_message
+      @message.source = 'plain'
+      @message.nice_source.should == "Directly Edited"
     end
     
-    it "should find the recipient of email address if given an email address" do
-      @message = Message.new
-      @message.id = 10
-      Recipient.should_receive(:find).with(:first, :conditions => {:email => 'mikel@me.com'})
-      Addressee.stub!(:create!)
-      @message.add_recipient = 'mikel@me.com'
+    it "should change the source into a nice human value for plain text" do
+      @message = new_message
+      @message.source = 'html'
+      @message.nice_source.should == "From HTML Files"
     end
     
-    it "should find the recipient off given and family name if given a given and family name" do
-      @message = Message.new
-      @message.id = 10
-      Recipient.should_receive(:find).with(:first, :conditions => {:given_name => 'Mikel', :family_name => "Lindsaar"})
-      @message.add_recipient = 'Mikel Lindsaar'
+    it "should change the source into a nice human value for html" do
+      @message = new_message
+      @message.source = 'template'
+      @message.nice_source.should == "From Template"
     end
 
-    it "should create the subscription with the found recipient id" do
-      @message = Message.new
-      @message.id = 10
-      @recipient = mock_model(Recipient)
-      Recipient.stub!(:find).and_return(@recipient)
-      @message.add_recipient = 'Mikel Lindsaar'
-      @message.recipients.should include(@recipient)
-    end
-    
-    it "should not try adding an addressee if no recipient was found" do
-      @message = Message.new
-      @message.id = 10
-      Recipient.stub!(:find).and_return(nil)
-      doing { @message.add_recipient = 'Mikel Lindsaar' }.should_not raise_error
-    end
-    
-    it "should not try to add a recipient if none was given" do
-      @message = Message.new
-      @message.id = 10
-      doing { @message.add_recipient = '' }.should_not raise_error
-    end
-    
-    it "should not try to add a group if none was given" do
-      @message = Message.new
-      @message.id = 10
-      doing { @message.add_group_id = '' }.should_not raise_error
-    end
-    
-    it "should add an error to base if no recipient was found" do
-      @message = new_message(:aasm_state => 'select_recipients')
-      Recipient.stub!(:find).and_return(nil)
-      @message.add_recipient = 'Mikel Lindsaar'
-      @message.next!
-      @message.errors.full_messages.should include("No recipient found with 'Mikel Lindsaar'")
-    end
-    
-    it "should say 'Please select at least one recipient' if there are no recipients or groups selected already and nothing is passed in" do
-      @message = new_message(:aasm_state => 'select_recipients')
-      Recipient.stub!(:find).and_return(nil)
-      @message.add_recipient = ''
-      @message.next!
-      @message.errors.full_messages.should include("Please select at least one recipient")
-    end
-    
   end
 
   describe "file handling for source data" do
@@ -232,10 +170,6 @@ describe Message do
     
   end
   
-  
-  
-  
-  
   describe "state transitions using next!" do
     
     it "should be initially in the new state" do
@@ -285,66 +219,16 @@ describe Message do
     it "should transition from edit_content to select_recipients" do
       @message = new_message(:aasm_state => "edit_content", :source => 'plain')
       @message.next!
-      @message.state.should == "select_recipients"
-    end
-
-    it "should transition from select_recipients to select_recipients once we add one recipient" do
-      @message = new_message
-      @message.aasm_state = 'select_recipients'
-      @recipient = Factory(:recipient, :email => "mikel@me.com")
-      @message.add_recipient = @recipient.email
-      @message.next!
-      @message.state.should == "select_recipients"
-    end
-
-    it "should transition from select_recipients to schedule_mailout only if we have finished selecting recipients" do
-      @message = new_message
-      @message.aasm_state = 'select_recipients'
-      @recipient = Factory(:recipient, :email => "mikel@me.com")
-      @message.add_recipient = @recipient.email
-      @message.next!
-      @message = Message.find(@message.id)
-      @message.next!
-      @message.state.should == "schedule_mailout"
-    end
-
-    it "should transition from schedule_mailout to confirm_mailout" do
-      @message = new_message(:aasm_state => "schedule_mailout")
-      @message.next!
-      @message.state.should == "confirm_mailout"
-    end
-
-    it "should transition from confirm_mailout to confirmed" do
-      @message = new_message(:aasm_state => "confirm_mailout")
-      @message.next!
-      @message.state.should == "confirmed"
+      @message.state.should == "complete"
     end
 
   end
-
   
   describe "state transitions using previous!" do
-
-    it "should transition to confirm_mailout from confirmed" do
-      @message = new_message(:aasm_state => "confirmed")
-      @message.previous!
-      @message.state.should == "confirm_mailout"
-    end
-    
-    it "should transition to schedule_mailout from confirm_mailout" do
-      @message = new_message(:aasm_state => "confirm_mailout")
-      @message.previous!
-      @message.state.should == "schedule_mailout"
-    end
-    
-    it "should transition to select_recipients from schedule_mailout" do
-      @message = new_message(:aasm_state => "schedule_mailout")
-      @message.previous!
-      @message.state.should == "select_recipients"
-    end
     
     it "should transition to edit_content from select_recipients" do
-      @message = new_message(:aasm_state => "select_recipients")
+      @message = new_message(:aasm_state => "complete")
+      @message.source = 'plain'
       @message.previous!
       @message.state.should == "edit_content"
     end

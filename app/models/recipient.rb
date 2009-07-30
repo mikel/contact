@@ -14,7 +14,7 @@ class Recipient < ActiveRecord::Base
   has_many :groups, :through => :subscriptions
   
   has_many :addressees
-  has_many :messages, :through => :addressees
+  has_many :mailouts, :through => :addressees
   
   validates_presence_of :organization_id
   validates_associated :organization

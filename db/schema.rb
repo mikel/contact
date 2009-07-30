@@ -9,10 +9,10 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090726030640) do
+ActiveRecord::Schema.define(:version => 20090729011053) do
 
   create_table "addressees", :force => true do |t|
-    t.integer  "message_id"
+    t.integer  "mailout_id"
     t.integer  "group_id"
     t.integer  "recipient_id"
     t.datetime "created_at"
@@ -40,6 +40,17 @@ ActiveRecord::Schema.define(:version => 20090726030640) do
     t.datetime "updated_at"
   end
 
+  create_table "mailouts", :force => true do |t|
+    t.string   "title"
+    t.integer  "message_id"
+    t.string   "aasm_state"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "date_scheduled"
+    t.datetime "date_sent"
+  end
+
   create_table "memberships", :force => true do |t|
     t.integer  "user_id"
     t.integer  "role_id"
@@ -59,8 +70,6 @@ ActiveRecord::Schema.define(:version => 20090726030640) do
     t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "date_scheduled"
-    t.datetime "date_sent"
   end
 
   create_table "organizations", :force => true do |t|

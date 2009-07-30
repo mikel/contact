@@ -46,10 +46,10 @@ class RecipientsController < ApplicationController
   
   def destroy
     @recipient = current_user.recipients.find(params[:id])
-    if params[:message_id]
-      @message = Message.find(params[:message_id])
-      @message.recipients.delete(@recipient)
-      redirect_to edit_message_path(@message)
+    if params[:mailout_id]
+      @mailout = Mailout.find(params[:mailout_id])
+      @mailout.recipients.delete(@recipient)
+      redirect_to edit_mailout_path(@mailout)
     else
       @recipient.delete
       flash[:notice] = "Recipient successfully deleted"

@@ -71,6 +71,9 @@ module NavigationHelpers
     
     when /the messages page/
       messages_path
+    
+    when /the mailouts page/
+      mailouts_path
       
     when /the groups page/
       groups_path
@@ -88,6 +91,13 @@ module NavigationHelpers
       raise ActiveRecord::RecordNotFound unless obj
       instance_eval("edit_#{klass.downcase}_path(obj)")
       
+    when /the show page for "([^\"]*)" with a "([^\"]*)" of "([^\"]*)"/
+      klass = $1
+      attribute = $2
+      value = $3
+      obj = klass.capitalize.constantize.find(:first, :conditions => {attribute => value})
+      raise ActiveRecord::RecordNotFound unless obj
+      instance_eval("#{klass.downcase}_path(obj)")
     
     else
       raise "Can't find mapping from \"#{page_name}\" to a path.\n" +

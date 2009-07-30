@@ -1,0 +1,6 @@
+<li>
+  <%= recipient.name %>
+  <%- unless no_edit -%>
+    <%= link_to "Remove", mailout_recipient_path(:id => recipient.to_param, :mailout_id => mailout.to_param), :method => 'delete' %>
+  <%- end -%>
+</li>

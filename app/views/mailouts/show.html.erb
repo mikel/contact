@@ -1,0 +1,46 @@
+<h2>Mailout: <%= @mailout.title %></h2>
+
+<h3>Message Details</h3>
+<table border="0" cellspacing="5" cellpadding="5">
+  <tr>
+    <td>Title</td>
+    <td><%= @mailout.message.title %></td>
+  </tr>
+  <tr>
+    <td>Type</td>
+    <td><%= @mailout.message.nice_type %></td>
+  </tr>
+  <tr>
+    <td>Source</td>
+    <td><%= @mailout.message.nice_source %></td>
+  </tr>
+</table>
+
+<h3>Individual Recipients</h3>
+  <ul>
+    <%= render :partial => "recipient", :collection => @mailout.recipients, :locals => {:message => @mailout, :no_edit => true} %>
+  </ul>
+
+
+<h3>Group Recipients</h3>
+  <ul>
+    <%= render :partial => "group", :collection => @mailout.groups, :locals => {:message => @mailout, :no_edit => true} %>
+  </ul>
+
+
+<h3>Delivery Data</h3>
+
+<table>
+  <tr>
+    <td>Due Date</td>
+    <td><%= @mailout.date_scheduled %></td>
+  </tr>
+  <tr>
+    <td>Delivered</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Delivered</td>
+    <td></td>
+  </tr>
+</table>

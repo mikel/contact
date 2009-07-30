@@ -1,14 +1,14 @@
 <h2>Select Recipients</h2>
 
 <ul>
-  <%= render :partial => "group", :collection => message.groups, :locals => {:message => message} %>
+  <%= render :partial => "group", :collection => mailout.groups, :locals => {:mailout => mailout, :no_edit => false} %>
 </ul>
 <%= f.label :add_group_id, "Add Group" %>
 <%= f.collection_select :add_group_id, Group.all(:order => 'name'), :id, :name, :include_blank => true -%>
 
 
 <ul>
-  <%= render :partial => "recipient", :collection => message.recipients, :locals => {:message => message} %>
+  <%= render :partial => "recipient", :collection => mailout.recipients, :locals => {:mailout => mailout, :no_edit => false} %>
 </ul>
 <%= f.label :add_recipient, "Add Recipient" %>
 <%= f.text_field :add_recipient -%>

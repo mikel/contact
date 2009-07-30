@@ -16,9 +16,9 @@ describe Group do
     
     it "should have many messages through addressees" do
       @group = Group.new
-      @message = Message.new
-      @group.messages << @message
-      @group.messages.should include(@message)
+      @mailout = Mailout.new
+      @group.mailouts << @mailout
+      @group.mailouts.should include(@mailout)
     end
     
   end

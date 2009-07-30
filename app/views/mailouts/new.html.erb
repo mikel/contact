@@ -1,0 +1,16 @@
+<% form_for @mailout do |f| -%>
+  <%= f.error_messages %>
+  <h2>
+  New Mailout
+  </h2>
+  <p>
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+  </p>
+  <p>
+    <%= f.label :message_id %>
+    <%= f.select :message_id, Message.find(:all).collect { |m| [m.title, m.id] }, {:include_blank => true} %>
+  </p>
+  
+  <%= f.submit "Next" %>
+<% end -%>

@@ -6,6 +6,6 @@ class Group < ActiveRecord::Base
   has_many :recipients, :through => :subscriptions
   
   has_many :addressees
-  has_many :messages,   :through => :addressees
+  has_many :mailouts,   :through => :addressees
   
 end

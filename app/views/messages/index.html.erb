@@ -1,9 +1,10 @@
+<h2>Saved Messages:</h2>
 <%- if @messages.empty? -%>
-  No mailouts created
+  No messages created
 <% else -%>
-  <ul>
+  <table>
     <%= render :partial => 'message', :collection => @messages %>
-  </ul>
+  </table>
 <%- end -%>
 
-<%= link_to "Make a new mailout", new_message_path %>
+<%= link_to "Make a new message", new_message_path %>

@@ -1,0 +1,10 @@
+<% form_for @mailout do |f| -%>
+  <%= f.error_messages %>
+
+  <%= render :partial => @mailout.state, :locals => { :f => f, :mailout => @mailout } %>
+  
+<% end -%>
+
+<p>
+  Step: <%= @mailout.state %>
+</p>

@@ -4,6 +4,10 @@ class MessagesController < ApplicationController
     @messages = Message.find(:all)
   end
   
+  def show
+    @message = Message.find(params[:id])
+  end
+  
   def new
     @message = Message.new
   end
@@ -26,7 +30,7 @@ class MessagesController < ApplicationController
     @message.attributes = params[:message]
     @message.next!
     case @message.state
-    when "confirmed"
+    when "complete"
       redirect_to messages_path
     else
       render :action => :edit

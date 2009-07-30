@@ -47,9 +47,9 @@ describe Recipient do
   describe "message association" do
     it "should have many messages through addressees" do
       @recipient = Recipient.new
-      @message = Message.new
-      @recipient.messages << @message
-      @recipient.messages.should include(@message)
+      @mailout = Mailout.new
+      @recipient.mailouts << @mailout
+      @recipient.mailouts.should include(@mailout)
     end
   end  
   
