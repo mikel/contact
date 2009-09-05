@@ -108,7 +108,7 @@ module TMail
       # Example:
       #  require 'rubygems'; require 'tmail'
       #  email_string =<<HEREDOC
-      #  To: mikel@lindsaar.net
+      #  To: mikel@test.lindsaar.net
       #  From: mikel@me.com
       #  Subject: This is a short Email
       #  

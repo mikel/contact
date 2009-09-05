@@ -46,10 +46,10 @@ module TMail
   # 
   # Just pass the email address in as a string to Address.parse:
   # 
-  #  email = TMail::Address.parse('Mikel Lindsaar <mikel@lindsaar.net>)
-  #  #=> #<TMail::Address mikel@lindsaar.net>
+  #  email = TMail::Address.parse('Mikel Lindsaar <mikel@test.lindsaar.net>)
+  #  #=> #<TMail::Address mikel@test.lindsaar.net>
   #  email.address
-  #  #=> "mikel@lindsaar.net"
+  #  #=> "mikel@test.lindsaar.net"
   #  email.local
   #  #=> "mikel"
   #  email.domain
@@ -133,7 +133,7 @@ module TMail
     # For example:
     # 
     #  Address.new("mikel", ["lindsaar", "net"])
-    #  #=> "#<TMail::Address mikel@lindsaar.net>"
+    #  #=> "#<TMail::Address mikel@test.lindsaar.net>"
     def initialize( local, domain )
       if domain
         domain.each do |s|
@@ -159,7 +159,7 @@ module TMail
     # 
     # For Example:
     # 
-    #  email = TMail::Address.parse("Mikel Lindsaar <mikel@lindsaar.net>")
+    #  email = TMail::Address.parse("Mikel Lindsaar <mikel@test.lindsaar.net>")
     #  email.name
     #  #=> "Mikel Lindsaar"
     def name
@@ -170,7 +170,7 @@ module TMail
     # 
     # For Example:
     # 
-    #  email = TMail::Address.parse("mikel@lindsaar.net")
+    #  email = TMail::Address.parse("mikel@test.lindsaar.net")
     #  email.name
     #  #=> nil
     #  email.name = "Mikel Lindsaar"
@@ -213,7 +213,7 @@ module TMail
     # 
     # For Example:
     # 
-    #  email = TMail::Address.parse("mikel@lindsaar.net")
+    #  email = TMail::Address.parse("mikel@test.lindsaar.net")
     #  email.local
     #  #=> "mikel"
     def local
@@ -231,7 +231,7 @@ module TMail
     # 
     # For Example:
     # 
-    #  email = TMail::Address.parse("mikel@lindsaar.net")
+    #  email = TMail::Address.parse("mikel@test.lindsaar.net")
     #  email.local
     #  #=> "lindsaar.net"
     def domain
@@ -243,9 +243,9 @@ module TMail
     # 
     # For Example:
     # 
-    #  email = TMail::Address.parse("mikel@lindsaar.net")
+    #  email = TMail::Address.parse("mikel@test.lindsaar.net")
     #  email.address
-    #  #=> "mikel@lindsaar.net"
+    #  #=> "mikel@test.lindsaar.net"
     def spec
       s = self.local
       d = self.domain
@@ -263,10 +263,10 @@ module TMail
     # 
     # For Example
     # 
-    #  addr1 = TMail::Address.parse("My Address <mikel@lindsaar.net>")
-    #  #=> "#<TMail::Address mikel@lindsaar.net>"
-    #  addr2 = TMail::Address.parse("Another <mikel@lindsaar.net>")
-    #  #=> "#<TMail::Address mikel@lindsaar.net>"
+    #  addr1 = TMail::Address.parse("My Address <mikel@test.lindsaar.net>")
+    #  #=> "#<TMail::Address mikel@test.lindsaar.net>"
+    #  addr2 = TMail::Address.parse("Another <mikel@test.lindsaar.net>")
+    #  #=> "#<TMail::Address mikel@test.lindsaar.net>"
     #  addr1 == addr2
     #  #=> true
     def ==( other )
@@ -278,7 +278,7 @@ module TMail
     # Provides a unique hash value for this record against the local and domain
     # parts, ignores the name/phrase value
     # 
-    #  email = TMail::Address.parse("mikel@lindsaar.net")
+    #  email = TMail::Address.parse("mikel@test.lindsaar.net")
     #  email.hash
     #  #=> 18767598
     def hash
@@ -287,7 +287,7 @@ module TMail
 
     # Duplicates a TMail::Address object returning the duplicate
     # 
-    #  addr1 = TMail::Address.parse("mikel@lindsaar.net")
+    #  addr1 = TMail::Address.parse("mikel@test.lindsaar.net")
     #  addr2 = addr1.dup
     #  addr1.id == addr2.id
     #  #=> false

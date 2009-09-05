@@ -1,34 +1,4 @@
+<%- content_for :sidebar do -%>
+Sidebar
+<%- end -%>
 <h1>Welcome to Contact</h1>
-
-<h2>Email Templates</h2>
-
-<ul>
-  <li>
-    <%= link_to "Email Templates", email_templates_path %>
-  </li>
-
-  <li>
-    <%= link_to "Recipients", recipients_path %>
-  </li>
-
-  <li>
-    <%= link_to "Messages", messages_path %>
-  </li>
-
-  <li>
-    <%= link_to "Groups", groups_path %>
-  </li>
-
-  <li>
-    <%= link_to "Mailouts", mailouts_path %>
-  </li>
-
-  <li>
-    <%- if current_user.admin -%>
-      <%= link_to "Users", users_path %><br />
-    <%- else -%>
-      <%= link_to "Profile", edit_user_path(current_user) %><br />
-    <%- end -%>
-  </li>
-  
-</ul>

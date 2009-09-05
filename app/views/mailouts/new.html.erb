@@ -8,6 +8,10 @@
     <%= f.text_field :title %>
   </p>
   <p>
+    <%= f.label :sender_id %>
+    <%= f.select :sender_id, Sender.find(:all).collect { |m| [m.name, m.id] }, {:include_blank => true} %>
+  </p>
+  <p>
     <%= f.label :message_id %>
     <%= f.select :message_id, Message.find(:all).collect { |m| [m.title, m.id] }, {:include_blank => true} %>
   </p>

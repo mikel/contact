@@ -1,0 +1,37 @@
+<div id="head_text">
+  Contact Mailing System
+</div>
+
+<% if current_user_session %>
+  <div id="navigation">
+    <ul>
+      <li>
+        <%= link_to "Recipients", recipients_path %>
+      </li>
+
+      <li>
+        <%= link_to "Groups", groups_path %>
+      </li>
+
+      <li>
+        <%= link_to "Messages", messages_path %>
+      </li>
+
+      <li>
+        <%= link_to "Templates", email_templates_path %>
+      </li>
+
+      <li>
+        <%= link_to "Mailouts", mailouts_path %>
+      </li>
+
+      <li>
+        <%- if current_user_admin? -%>
+          <%= link_to "Users", users_path %><br />
+        <%- else -%>
+          <%= link_to "Profile", edit_user_path(current_user) %><br />
+        <%- end -%>
+      </li>
+    </ul>
+  </div>
+<%- end -%>

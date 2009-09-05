@@ -18,6 +18,13 @@ describe Message do
       @message.title = nil
       @message.should_not be_valid
     end
+
+    it "should be invalid with a blank title" do
+      @message = new_message
+      @message.should be_valid
+      @message.title = ''
+      @message.should_not be_valid
+    end
     
   end
 

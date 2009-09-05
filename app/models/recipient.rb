@@ -1,3 +1,4 @@
+# Recipient is an addressee or a group that is associated with a mailout
 class Recipient < ActiveRecord::Base
   
   # Use state machine for state transitions
@@ -11,6 +12,8 @@ class Recipient < ActiveRecord::Base
   belongs_to :organization
 
   has_many :subscriptions
+  has_many :deliveries
+  
   has_many :groups, :through => :subscriptions
   
   has_many :addressees
@@ -18,6 +21,14 @@ class Recipient < ActiveRecord::Base
   
   validates_presence_of :organization_id
   validates_associated :organization
+  
+  validates_each :email do |record, attr, value|
+    record.errors.add attr, 'is invalid' unless (TMail::Address.parse(value) rescue false)
+  end
+  
+  def before_save
+    self.domain = TMail::Address.parse(email.to_s).domain
+  end
   
   def name
     "#{given_name} #{family_name}"

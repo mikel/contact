@@ -3,6 +3,11 @@ Given /^there is a mailout called "([^\"]*)" in the system$/ do |title|
   mailout.save!
 end
 
+Given /^there is a sender called "([^\"]*)" in the system$/ do |name|
+  sender = Factory(:sender, :name => name, :organization => Organization.first)
+  sender.save!
+end
+
 Given /^there is a mailout in the system called "([^\"]*)" with "([^\"]*)" as it's message$/ do |title, msg_title|
   message = Message.find_by_title(msg_title)
   mailout = Factory(:mailout, :title => title, :aasm_state => 'confirmed', :user => User.first, :message => message)

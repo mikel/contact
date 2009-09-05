@@ -15,11 +15,11 @@ class Message < ActiveRecord::Base
   
   aasm_event :next do
     transitions :to => :edit_content,      :from => [:new], 
-                :guard => Proc.new { |m| m.source == 'plain' }
+                :guard => Proc.new { |m| m.source == 'plain' && m.valid? }
     transitions :to => :select_html,       :from => [:new],
-                :guard => Proc.new { |m| m.source == 'html' }
+                :guard => Proc.new { |m| m.source == 'html' && m.valid? }
     transitions :to => :select_template,   :from => [:new], 
-                :guard => Proc.new { |m| m.source == 'template' }
+                :guard => Proc.new { |m| m.source == 'template' && m.valid? }
     transitions :to => :edit_content,      :from => [:select_html],
                 :on_transition => Proc.new { |m| m.multipart = true }
     transitions :to => :edit_content,      :from => [:select_template],
@@ -38,7 +38,7 @@ class Message < ActiveRecord::Base
     transitions :to => :new,               :from => [:edit_content]
   end
   
-  validates_presence_of :title
+  validates_format_of :title, :with => /^.+$/i, :message => "can't be blank"
   
   has_many :attachments
   has_many :mailouts

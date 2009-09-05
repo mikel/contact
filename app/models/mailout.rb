@@ -8,6 +8,7 @@ class Mailout < ActiveRecord::Base
   aasm_state :schedule_mailout
   aasm_state :confirm_mailout
   aasm_state :confirmed
+  aasm_state :sent
   
   aasm_event :next do
     transitions :to => :select_recipients, :from => [:new]
@@ -15,9 +16,11 @@ class Mailout < ActiveRecord::Base
                 :guard => Proc.new { |m| m.must_have_recipients }
     transitions :to => :confirm_mailout,   :from => [:schedule_mailout]
     transitions :to => :confirmed,         :from => [:confirm_mailout]
+    transitions :to => :sent,              :from => [:confirmed]
   end
   
   aasm_event :previous do
+    transitions :to => :confirmed,         :from => [:sent]
     transitions :to => :confirm_mailout,   :from => [:confirmed]
     transitions :to => :schedule_mailout,  :from => [:confirm_mailout]
     transitions :to => :select_recipients, :from => [:schedule_mailout]
@@ -30,9 +33,12 @@ class Mailout < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :message
+  belongs_to :sender
   
   validates_presence_of :title
   validates_presence_of :message_id, :message => "must be selected"
+  
+  named_scope :ready_to_send, {:conditions => ["date_scheduled < ? AND aasm_state = ?", Time.now, 'confirmed']}
   
   def state
     aasm_state
@@ -65,7 +71,6 @@ class Mailout < ActiveRecord::Base
     end
   end
   
-  
   def add_group_id
     @group_selected
   end
@@ -82,6 +87,36 @@ class Mailout < ActiveRecord::Base
   def add_recipient=(recipient_selected)
     @recipient_selected = recipient_selected
     do_add_recipients
+  end
+
+  def subscribers
+    recipient_ids = Addressee.find(:all, :select => 'recipient_id',
+                         :conditions => {:mailout_id => self.id}).map { |a| a.recipient_id }
+    recipient_ids << Subscription.recipient_ids_for(self.group_ids)
+    recipient_ids.flatten!
+    recipient_ids.uniq!
+    delivered_ids = Delivery.find(:all, :conditions => {:mailout_id => self.id}, :select => 'recipient_id').map { |a| a.recipient_id}
+    Recipient.find(:all, :conditions => ['id IN (?) and id NOT IN (?)', recipient_ids, delivered_ids], :order => "domain")
+  end
+
+  def from
+    sender.from if sender
+  end
+
+  def reply_to
+    sender.reply_to if sender
+  end
+  
+  def multipart?
+    message.multipart if message
+  end
+
+  def html_part
+    message.html_part if message
+  end
+  
+  def plain_part
+    message.plain_part if message
   end
 
   private

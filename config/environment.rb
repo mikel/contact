@@ -13,6 +13,11 @@ Rails::Initializer.run do |config|
 
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
+  
+  # This is needed for Cucumber to run... weird
+  if RAILS_ENV =~ /test/i && caller.join('').to_s =~ /cucumber/i
+    config.gem 'test-unit',    :lib => 'test/unit'
+  end
 
   # Gems needed for Contact
   config.gem "authlogic",                                 :version => '>=2.0.11'
@@ -21,6 +26,7 @@ Rails::Initializer.run do |config|
   config.gem "mime-types",   :lib => 'mime/types',        :version => '>=1.15'
   config.gem 'rubyist-aasm', :lib => 'aasm',              :version => '>=2.0', :source => "http://gems.github.com"
   config.gem 'validatable',  :lib => 'validatable'
+  config.gem 'haml'
   
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named

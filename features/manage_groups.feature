@@ -24,3 +24,4 @@ Feature: Manage Groups
     Then I should be on the groups page
     And I should see "Public"
 
+

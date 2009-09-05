@@ -6,9 +6,11 @@ Feature: Managing Mailouts
   Scenario: Creating a mailout
     Given I am logged in
     And there is a message called "My Message" in the system
+    And there is a sender called "Mikel Org" in the system
     When I follow "Mailouts"
     And I follow "Make a new mailout"
     And I fill in "Title" with "My new mailout"
+    And I select "Mikel Org" from "Sender"
     And I select "My Message" from "Message"
     And I press "Next"
     Then I should see "Select Recipients"

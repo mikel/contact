@@ -1,0 +1,22 @@
+<meta content="text/html;charset=utf-8" http-equiv="content-type" />
+<meta content="text/css" http-equiv="Content-Style-Type" />
+
+<%= javascript_include_tag 'prototype',
+                           'effects',
+                           'controls', :cache => 'base' %>
+
+<%= javascript_include_tag 'application',
+                           :cache => 'app' %>
+
+<%= stylesheet_link_tag    'static/reset-fonts-grids.css',
+                           'layouts.css',
+                           'defaults.css',
+                           'forms.css',
+                           'tables.css',
+                           'buttons.css',
+                           'header.css',
+                           'footer.css',
+                           'content.css',
+                           'sidebar.css', :cache => 'all' %>
+
+<%= stylesheet_link_tag    "#{controller.controller_name}.css" %>

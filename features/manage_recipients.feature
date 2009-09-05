@@ -40,6 +40,7 @@ Feature: Manage Recipients
     And I am on the new recipient page
     When I fill in "Given Name" with "Mikel"
     And I fill in "Family Name" with "Lindsaar"
+    And I fill in "Email" with "bob@test.lindsaar.net"
     And I press "Create"
     Then I should be on the recipients page
     And I should see "Mikel Lindsaar"
@@ -106,3 +107,4 @@ Feature: Manage Recipients
     Then I should be on the edit page for "Recipient" with a "given_name" of "Mikel"
     And I should not see "Remove"
     And I should see "Public"
+

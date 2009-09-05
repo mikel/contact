@@ -81,9 +81,9 @@ module TMail
   #  email.to_s
   #  #=> "Message-Id: <47bf668b633f1_25a8fbb80475@baci.local.tmail>\n\n"
   #  email.message_id = TMail.new_message_id("lindsaar.net")
-  #  #=> "<47bf668b633f1_25a8fbb80475@lindsaar.net.tmail>"
+  #  #=> "<47bf668b633f1_25a8fbb80475@test.lindsaar.net.tmail>"
   #  email.to_s
-  #  #=> "Message-Id: <47bf668b633f1_25a8fbb80475@lindsaar.net.tmail>\n\n"
+  #  #=> "Message-Id: <47bf668b633f1_25a8fbb80475@test.lindsaar.net.tmail>\n\n"
   def TMail.new_message_id( fqdn = nil )
     fqdn ||= ::Socket.gethostname
     "<#{random_tag()}@#{fqdn}.tmail>"

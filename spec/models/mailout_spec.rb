@@ -64,6 +64,13 @@ describe Mailout do
       @mailout.message = @message
       @mailout.message.should == @message
     end
+    
+    it "should belong to a sender" do
+      @mailout = Mailout.new
+      @sender = Sender.new
+      @mailout.sender = @sender
+      @mailout.sender.should == @sender
+    end
   end
   
   describe "helper for adding a group individually" do
@@ -198,9 +205,21 @@ describe Mailout do
       @mailout.next!
       @mailout.state.should == "confirmed"
     end
+
+    it "should transition from confirmed to sent" do
+      @mailout = new_mailout(:aasm_state => "confirmed")
+      @mailout.next!
+      @mailout.state.should == "sent"
+    end
   end
 
   describe "state transitions using previous!" do
+    
+    it "should transition to confirmed from sent" do
+      @mailout = new_mailout(:aasm_state => "sent")
+      @mailout.previous!
+      @mailout.state.should == "confirmed"
+    end
     
     it "should transition to confirm_mailout from confirmed" do
       @mailout = new_mailout(:aasm_state => "confirmed")
@@ -226,6 +245,130 @@ describe Mailout do
       @mailout.state.should == "new"
     end
 
+  end
+
+  describe "ready to send scope" do
+    
+    it "should return an email that is confirmed and past it's sent schedule date" do
+      mailout = Factory(:mailout, :date_scheduled => 1.day.ago, :aasm_state => 'confirmed')
+      Mailout.ready_to_send.should include(mailout)
+    end
+    
+    it "should not return an email that is past it's sent schedule date but not confirmed" do
+      mailout = Factory(:mailout, :date_scheduled => 1.day.ago, :aasm_state => 'confirm_mailout')
+      Mailout.ready_to_send.should_not include(mailout)
+    end
+    
+    it "should not return an email that is confirmed but not past it's sent schedule date" do
+      mailout = Factory(:mailout, :date_scheduled => 1.day.from_now, :aasm_state => 'confirmed')
+      Mailout.ready_to_send.should_not include(mailout)
+    end
+
+  end
+
+  describe "getting a list of addressees" do
+    it "should return a list of people who will be sent an email" do
+      doing { Factory(:mailout).subscribers }.should_not raise_error
+    end
+    
+    it "should include any recipients in it's subscriber list" do
+      mailout = Factory(:mailout)
+      mikel = Factory(:recipient, :email => "mikel@test.lindsaar.net")
+      ada = Factory(:recipient, :email => "ada@test.lindsaar.net")
+      mailout.recipients << mikel
+      mailout.recipients << ada
+      mailout.recipients.length.should == 2
+      mailout.subscribers.should include(mikel)
+      mailout.subscribers.should include(ada)
+      mailout.subscribers.length.should == 2
+    end
+    
+    it "should include any groups in it's subscriber list" do
+      mailout = Factory(:mailout)
+      mikel = Factory(:recipient, :email => "mikel@test.lindsaar.net")
+      ada = Factory(:recipient, :email => "ada@test.lindsaar.net")
+      group = Factory(:group)
+      group.recipients << mikel
+      group.recipients << ada
+      mailout.groups << group
+      mailout.subscribers.should include(mikel)
+      mailout.subscribers.should include(ada)
+      mailout.subscribers.length.should == 2
+    end
+    
+    it "should only include each recipient once" do
+      mailout = Factory(:mailout)
+      mikel = Factory(:recipient, :email => "mikel@test.lindsaar.net")
+      group = Factory(:group)
+      group.recipients << mikel
+      mailout.groups << group
+      mailout.recipients << mikel
+      mailout.subscribers.should include(mikel)
+      mailout.subscribers.length.should == 1
+    end
+    
+    it "should find all subscribers for the mailout, but order them by domain" do
+      mailout = Factory(:mailout)
+      mikel = Factory(:recipient, :email => "mikel@test.lindsaar.net")
+      sam = Factory(:recipient, :email => "mikel@gmail.com")
+      ada = Factory(:recipient, :email => "ada@test.lindsaar.net")
+      group = Factory(:group)
+      group.recipients << mikel
+      group.recipients << sam
+      mailout.recipients << ada
+      mailout.groups << group
+      mailout.subscribers.should == [sam, mikel, ada]
+    end
+    
+    it "should not find anyone we have already delivered a mailout to" do
+      mailout = Factory(:mailout)
+      sam = Factory(:recipient, :email => "mikel@gmail.com")
+      ada = Factory(:recipient, :email => "ada@test.lindsaar.net")
+      mailout.recipients << ada
+      mailout.recipients << sam
+      Delivery.create(:recipient => sam, :mailout => mailout, :user => User.find(:first))
+      mailout.subscribers.should == [ada]
+    end
+    
+  end
+
+  describe "sender relationship" do
+    it "should give it's sender's from address when sent :from" do
+      @mailout = Mailout.new
+      @sender = Sender.new(:from => '123@test.lindsaar.net')
+      @mailout.sender = @sender
+      @mailout.from.should == @sender.from
+    end
+
+    it "should give it's sender's reply_to address when sent :reply_to" do
+      @mailout = Mailout.new
+      @sender = Sender.new(:reply_to => '123@test.lindsaar.net')
+      @mailout.sender = @sender
+      @mailout.reply_to.should == @sender.reply_to
+    end
+  end
+
+  describe "message relationship" do
+    it "should give it's message's multipart setting when sent :multipart?" do
+      @mailout = Mailout.new
+      @message = Message.new(:multipart => true)
+      @mailout.message = @message
+      @mailout.should be_multipart
+    end
+
+    it "should give it's message's plain_part text when sent :plain_part" do
+      @mailout = Mailout.new
+      @message = Message.new(:plain_part => "This is plain text")
+      @mailout.message = @message
+      @mailout.plain_part.should == "This is plain text"
+    end
+
+    it "should give it's message's html_part text when sent :html_part" do
+      @mailout = Mailout.new
+      @message = Message.new(:html_part => "This is HTML")
+      @mailout.message = @message
+      @mailout.html_part.should == "This is HTML"
+    end
   end
 
 end

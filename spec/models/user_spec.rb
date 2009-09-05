@@ -184,4 +184,13 @@ describe User do
     end
   end
   
+  describe "delivery association" do
+    it "should have many deliveries" do
+      user = User.new
+      delivery = Delivery.new
+      user.deliveries << delivery
+      user.deliveries.should include(delivery)
+    end
+  end
+  
 end

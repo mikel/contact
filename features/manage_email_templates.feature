@@ -24,7 +24,7 @@ Feature: Manage Email Templates
   Scenario: Making a new email template
     Given I am logged in
     When I go to the homepage
-    And I follow "Email Templates"
+    And I follow "Templates"
     And I follow "Make a new email template"
     Then I should be on the new email templates page
   

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090729011053) do
+ActiveRecord::Schema.define(:version => 20090905122340) do
 
   create_table "addressees", :force => true do |t|
     t.integer  "mailout_id"
@@ -33,6 +33,15 @@ ActiveRecord::Schema.define(:version => 20090729011053) do
     t.datetime "updated_at"
   end
 
+  create_table "deliveries", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "recipient_id"
+    t.integer  "mailout_id"
+    t.integer  "sent_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "groups", :force => true do |t|
     t.string   "name"
     t.integer  "user_id"
@@ -43,12 +52,13 @@ ActiveRecord::Schema.define(:version => 20090729011053) do
   create_table "mailouts", :force => true do |t|
     t.string   "title"
     t.integer  "message_id"
-    t.string   "aasm_state"
     t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer  "sender_id"
+    t.string   "aasm_state"
     t.datetime "date_scheduled"
     t.datetime "date_sent"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "memberships", :force => true do |t|
@@ -61,13 +71,13 @@ ActiveRecord::Schema.define(:version => 20090729011053) do
   create_table "messages", :force => true do |t|
     t.string   "title"
     t.string   "source"
-    t.string   "aasm_state"
     t.boolean  "multipart"
     t.integer  "user_id"
     t.integer  "email_template_id"
     t.text     "html_part"
     t.text     "plain_part"
     t.string   "type"
+    t.string   "aasm_state"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -82,16 +92,26 @@ ActiveRecord::Schema.define(:version => 20090729011053) do
     t.string   "given_name"
     t.string   "family_name"
     t.string   "email"
+    t.string   "domain"
     t.integer  "undeliverable_count",               :default => 0
     t.boolean  "black_listed",                      :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.integer  "organization_id"
     t.string   "aasm_state",          :limit => 10
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "roles", :force => true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "senders", :force => true do |t|
+    t.string   "name"
+    t.string   "from"
+    t.string   "reply_to"
+    t.integer  "organization_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -108,6 +128,7 @@ ActiveRecord::Schema.define(:version => 20090729011053) do
     t.string   "email",                              :null => false
     t.string   "given_name",                         :null => false
     t.string   "family_name",                        :null => false
+    t.integer  "organization_id",                    :null => false
     t.string   "crypted_password",                   :null => false
     t.string   "password_salt",                      :null => false
     t.string   "persistence_token",                  :null => false
@@ -122,7 +143,6 @@ ActiveRecord::Schema.define(:version => 20090729011053) do
     t.string   "last_login_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "organization_id"
   end
 
 end

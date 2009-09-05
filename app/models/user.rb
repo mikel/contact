@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   has_many :memberships
   has_many :recipients,   :through => :organization
   has_many :roles,        :through => :memberships
+  has_many :deliveries
 
   belongs_to :organization
   
@@ -35,6 +36,8 @@ class User < ActiveRecord::Base
   def admin
     member_of?(:admin)
   end
+  
+  alias :admin? :admin
   
   def last_admin?
     @last_admin ||= !User.find(:first, 

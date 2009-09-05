@@ -3,17 +3,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title><%= h(yield(:title) || "Untitled") %></title>
+    
+    <%= render :partial => 'layouts/head' %>
+    
     <%= yield(:head) %>
   </head>
   <body>
-    <div id="flashbox">
-      <%- flash.each do |name, msg| -%>
-        <%= content_tag :div, msg, :id => "flash_#{name}" %>
-      <%- end -%>
+    
+    <div id="header">
+      <%= render :partial => 'layouts/header' %>
     </div>
     
-    <%= yield %>
-    
+    <div id="yui-main"> 
+      <div class="yui-b"> 
+        <div class="yui-gc">
+          <div id="main" class="yui-u first">
+            <div id="flashbox">
+              <%- flash.each do |name, msg| -%>
+                <%= content_tag :div, msg, :id => "flash_#{name}" %>
+              <%- end -%>
+            </div>
+            <%= yield %>
+          </div> 
+          <div id="sidebar" class="yui-u">
+            <%= yield(:sidebar)  %>
+          </div> 
+        </div> 
+      </div> 
+    </div> 
     <div id="footer">
       <%= link_to "Home", root_path %><br />
       <%= link_to "Logout", logout_path %>

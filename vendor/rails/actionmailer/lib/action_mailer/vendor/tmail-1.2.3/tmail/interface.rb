@@ -44,8 +44,8 @@ module TMail
     # 
     # Returns a string of the exact contents of the field
     # 
-    #  mail.from = "mikel <mikel@lindsaar.net>"
-    #  mail.header_string("From") #=> "mikel <mikel@lindsaar.net>"
+    #  mail.from = "mikel <mikel@test.lindsaar.net>"
+    #  mail.header_string("From") #=> "mikel <mikel@test.lindsaar.net>"
     def header_string( name, default = nil )
       h = @header[name.downcase] or return default
       h.to_s
@@ -1003,10 +1003,10 @@ module TMail
     # 
     # Example:
     # 
-    #  mail.to = "Mikel <mikel@lindsaar.net>"
+    #  mail.to = "Mikel <mikel@test.lindsaar.net>"
     #  mail.cc = "Trans <t@t.com>"
     #  mail.bcc = "bob <bob@me.com>"
-    #  mail.destinations #=> ["mikel@lindsaar.net", "t@t.com", "bob@me.com"]
+    #  mail.destinations #=> ["mikel@test.lindsaar.net", "t@t.com", "bob@me.com"]
     def destinations( default = nil )
       ret = []
       %w( to cc bcc ).each do |nm|
@@ -1020,7 +1020,7 @@ module TMail
     # Yields a block of destination, yielding each as a string.
     #  (from the destinations example)
     #  mail.each_destination { |d| puts "#{d.class}: #{d}" }
-    #  String: mikel@lindsaar.net
+    #  String: mikel@test.lindsaar.net
     #  String: t@t.com
     #  String: bob@me.com
     def each_destination( &block )
@@ -1041,7 +1041,7 @@ module TMail
     # either be passed as a parameter or defaults to nil
     # 
     # Example:
-    #  mail.from = "Mikel <mikel@lindsaar.net>"
+    #  mail.from = "Mikel <mikel@test.lindsaar.net>"
     #  mail.reply_to = nil
     #  mail.reply_addresses #=> [""]  
     # 
@@ -1071,8 +1071,8 @@ module TMail
     #  mail = TMail::Mail.load("my_email")
     #  reply_email = mail.create_reply
     #  reply_email.class         #=> TMail::Mail
-    #  reply_email.references  #=> ["<d3b8cf8e49f04480850c28713a1f473e@lindsaar.net>"]
-    #  reply_email.in_reply_to #=> ["<d3b8cf8e49f04480850c28713a1f473e@lindsaar.net>"]
+    #  reply_email.references  #=> ["<d3b8cf8e49f04480850c28713a1f473e@test.lindsaar.net>"]
+    #  reply_email.in_reply_to #=> ["<d3b8cf8e49f04480850c28713a1f473e@test.lindsaar.net>"]
     def create_reply
       setup_reply create_empty_mail()
     end

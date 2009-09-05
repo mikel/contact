@@ -3,7 +3,6 @@ class CreateMessages < ActiveRecord::Migration
     create_table :messages do |t|
       t.string  :title
       t.string  :source
-      t.string  :state
       t.boolean :multipart
       t.integer :user_id
       t.integer :email_template_id
@@ -11,6 +10,8 @@ class CreateMessages < ActiveRecord::Migration
       t.text    :plain_part
 
       t.string  :type
+      t.string  :aasm_state
+
       t.timestamps
     end
   end

@@ -6,6 +6,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string    :email,               :null => false
       t.string    :given_name,          :null => false
       t.string    :family_name,         :null => false
+      t.integer   :organization_id,     :null => false
       
       # Authentication Fields for AuthLogic
       t.string    :crypted_password,    :null => false
