@@ -33,4 +33,40 @@ describe Delivery do
       @delivery.user.should == @user
     end
   end
+
+  describe "providing unique URLs for each delivery" do
+    
+    it "should provide a hash for each user" do
+      delivery = Delivery.new(:user_id      => 1,
+                              :recipient_id => 2,
+                              :mailout_id   => 3)
+      delivery.unique_path.should_not be_blank
+    end
+    
+    it "should provide a unique path that is URL safe" do
+      delivery = Delivery.new(:user_id      => 1,
+                              :recipient_id => 2,
+                              :mailout_id   => 3)
+      (delivery.unique_path =~ /[\\\/\s]/).should be_nil
+    end
+    
+    it "should provide an unique hash" do
+      delivery1 = Delivery.new(:user_id      => 1,
+                               :recipient_id => 2,
+                               :mailout_id   => 3)
+      delivery2 = Delivery.new(:user_id      => 1,
+                               :recipient_id => 3,
+                               :mailout_id   => 3)
+      delivery1.unique_path.should_not == delivery2.unique_path
+    end
+    
+    it "should be able return the delivery from a supplied path" do
+      delivery = Delivery.create(:user_id      => 1,
+                                 :recipient_id => 2,
+                                 :mailout_id   => 3)
+      found = Delivery.for(delivery.unique_path)
+      found.should == delivery
+    end
+  end
+
 end

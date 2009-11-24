@@ -47,9 +47,9 @@ Feature: Sending a Mailout
     Given I am logged in
     And there is a recipient I added in the system called "Mikel Lindsaar"
     And there is one mailout called "My Mailout" to be sent immediately
-    And the mailout "My Mailout" has a recipient called "Mikel Lindsaar"
+    And the mailout "My Mailout" has the recipient "Mikel Lindsaar"
     And there is one mailout called "My Other Mailout" to be sent one day from now
-    And the mailout "My Other Mailout" has a recipient called "Mikel Lindsaar"
+    And the mailout "My Other Mailout" has the recipient "Mikel Lindsaar"
     When I tell the system to send
     Then there should be 1 delivery
     And the recipient "Mikel Lindsaar" should have been delivered one email

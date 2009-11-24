@@ -9,7 +9,7 @@ Feature: Viewing an email via a web server
     And there is one plain text mailout called "My Mailout" to be sent immediately
     And the mailout "My Mailout" has the recipient "Mikel Lindsaar"
     When I tell the system to send
-    Then there should be one delivery
+    Then there should be 1 delivery
     And the delivery body should have "View this email in your web browser"
   
   Scenario: Multipart email
@@ -17,8 +17,10 @@ Feature: Viewing an email via a web server
     And there is a recipient I added in the system called "Mikel Lindsaar"
     And there is one multipart mailout called "My Mailout" to be sent immediately
     And the mailout "My Mailout" has the recipient "Mikel Lindsaar"
+    And the mailout "My Mailout" has the text body "This is an email."
+    And the mailout "My Mailout" has the html body "<p>This is an email.</p>"
     When I tell the system to send
-    Then there should be one delivery
+    Then there should be 1 delivery
     And the delivery body should have "View this email in your web browser"
   
   Scenario: Sending an email to one person
@@ -27,8 +29,8 @@ Feature: Viewing an email via a web server
     And there is one plain text mailout called "My Mailout" to be sent immediately
     And the mailout "My Mailout" has the recipient "Mikel Lindsaar"
     When I tell the system to send
-    Then there should be one delivery
-    And the delivery body should have a url to view the email especially for "Mikel Lindsaar"
+    Then there should be 1 delivery
+    And the delivery for "Mikel Lindsaar" should have a url to view the email especially for "Mikel Lindsaar"
 
   Scenario: Sending an email to more than one person
     Given I am logged in
@@ -38,6 +40,6 @@ Feature: Viewing an email via a web server
     And the mailout "My Mailout" has the recipient "Mikel Lindsaar"
     And the mailout "My Mailout" has the recipient "Ada Lindsaar"
     When I tell the system to send
-    Then there should be one delivery
-    And the delivery body should have a url to view the email especially for "Mikel Lindsaar"
-    And the delivery body should have a url to view the email especially for "Ada Lindsaar"
+    Then there should be 2 deliveries
+    And the delivery for "Mikel Lindsaar" should have a url to view the email especially for "Mikel Lindsaar"
+    And the delivery for "Ada Lindsaar" should have a url to view the email especially for "Ada Lindsaar"

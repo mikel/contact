@@ -96,7 +96,11 @@ class Mailout < ActiveRecord::Base
     recipient_ids.flatten!
     recipient_ids.uniq!
     delivered_ids = Delivery.find(:all, :conditions => {:mailout_id => self.id}, :select => 'recipient_id').map { |a| a.recipient_id}
-    Recipient.find(:all, :conditions => ['id IN (?) and id NOT IN (?)', recipient_ids, delivered_ids], :order => "domain")
+    if delivered_ids.empty?
+      Recipient.find(:all, :conditions => ['id IN (?)', recipient_ids], :order => "domain")
+    else
+      Recipient.find(:all, :conditions => ['id IN (?) and id NOT IN (?)', recipient_ids, delivered_ids], :order => "domain")
+    end
   end
 
   def from

@@ -27,10 +27,10 @@ class Mailer < ActionMailer::Base
     if mailout.multipart?
       content_type    "multipart/alternative" 
       part "text/html" do |p| 
-        p.body = render_message("welcome_email_html", :message => mailout.html_part) 
+        p.body = render_message("mailout_html", :message => mailout.html_part) 
       end 
       part "text/plain" do |p| 
-        p.body = render_message("welcome_email_plain", :message => mailout.plain_part) 
+        p.body = render_message("mailout_plain", :message => mailout.plain_part) 
       end 
     else
       body = mailout.plain_part

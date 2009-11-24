@@ -18,8 +18,11 @@ Given /^there is one mailout called "([^\"]*)" to be sent immediately$/ do |titl
   mailout = Factory(:mailout, :title => title, :date_scheduled => 1.day.ago, :aasm_state => 'confirmed')
 end
 
-Given /^the mailout "([^\"]*)" has the recipient "([^\"]*)"$/ do |arg1, arg2|
-  pending
+Given /^the mailout "([^\"]*)" has the recipient "([^\"]*)"$/ do |title, name|
+  mailout = Mailout.find_by_title(title)
+  given, family = name.split(' ')
+  recipient = Recipient.find(:first, :conditions => {:given_name => given, :family_name => family})
+  mailout.recipients << recipient
 end
 
 Then /^there should be (\d+) delivery$/ do |number|
@@ -65,6 +68,6 @@ Given /^the mailout "([^\"]*)" has the group "([^\"]*)"$/ do |mailout_name, grou
   mailout.save!
 end
 
-Given /^there is one mailout called "([^\"]*)" to be sent one day from now$/ do |arg1|
-  pending
+Given /^there is one mailout called "([^\"]*)" to be sent one day from now$/ do |title|
+  mailout = Factory(:mailout, :title => title, :date_scheduled => 1.day.from_now, :aasm_state => 'confirmed')
 end
